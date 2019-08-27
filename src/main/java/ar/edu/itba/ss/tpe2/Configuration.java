@@ -1,5 +1,6 @@
 package ar.edu.itba.ss.tpe2;
 
+import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -8,37 +9,33 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Configuration {
 	
-	private static String staticFileName = "static_config.txt";
-	private static String dynamicFileName = "dynamic_config.txt";
-	private static Integer particleCount;
-	private static Integer areaBorderLength;
-	private static Double interactionRadius;
-	private static boolean isOptimalM;
-	private static Integer m = null;
-	private static double velocity = 0.03;
-	private static Double eta;
+	private static String inputFileName = "config.txt";
+	private static Integer smallParticleCount;
 	private static Mode mode;
 	private static int timeLimit;
 	public static final int TEST_CYCLES = 20;
-	public static final double ETA_TEST_STEP = 0.2;
-	public static final double ETA_TEST_CYCLES = 25;
-	public static final int DENSITY_TEST_PARTICLE_STEP = 200;
-	public static final int DENSITY_TEST_MAX_PARTICLES = 4000;
+	public static final double AREA_BORDER_LENGTH = 0.5;
+	private static final double SMALL_PARTICLE_RADIUS = 0.005;
+	private static final double SMALL_PARTICLE_MASS = 0.1;
+	private static final double BIG_PARTICLE_RADIUS = 0.05;
+	private static final double BIG_PARTICLE_MASS = 100;
+	private static final double SMALL_PARTICLE_MAX_VELOCITY = 0.1;
+	private static final double BIG_PARTICLE_INIT_VELOCITY = 0;
+	private static final Point2D.Double BIG_PARTICLE_INIT_POSITION = new Point2D.Double(AREA_BORDER_LENGTH / 2, AREA_BORDER_LENGTH / 2);
 	
 	public static void requestMode() {
 		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);
 		
 		Integer selectedMode = null;
-	    System.out.println("Enter Mode [0 -> Single Run; 1-> Common Test; 2 -> Eta Test; 3 -> Density Test]: ");
-	    while(selectedMode == null || selectedMode < 0 || selectedMode > 3) {
+	    System.out.println("Enter Mode [0 -> Single Run; 1-> Common Test]: ");
+	    while(selectedMode == null || selectedMode < 0 || selectedMode > 1) {
 	    	selectedMode = stringToInt(scanner.nextLine());
 	    }
 	    mode = Mode.valueOf(selectedMode).get();
@@ -46,41 +43,13 @@ public class Configuration {
 	
 	public static void requestParameters() {
 		Scanner scanner = new Scanner(System.in);
-		
-	    System.out.println("Enter Interaction Radius: ");
-	    while(interactionRadius == null || interactionRadius <= 0) {
-	    	interactionRadius = stringToDouble(scanner.nextLine());
-	    }
-	    
-	    System.out.println("Enter M [0 -> Optimal]:");
-    	Integer selectedM = null;
-	    while(selectedM == null || selectedM < 0) {
-	    	selectedM = stringToInt(scanner.nextLine());
-	    }
-	    m = selectedM;
-	    isOptimalM = (m == 0);
-
-	    if(!isDensityTestMode()) {
-			System.out.println("Enter Particle Count:");
-			Integer selectedParticleCount = null;
-			while (selectedParticleCount == null) {
-				selectedParticleCount = stringToInt(scanner.nextLine());
-			}
-			particleCount = selectedParticleCount;
+    
+		System.out.println("Enter Small Particle Count:");
+		Integer selectedParticleCount = null;
+		while (selectedParticleCount == null) {
+			selectedParticleCount = stringToInt(scanner.nextLine());
 		}
-	    if(!isEtaTestMode()) {
-			 System.out.println("Enter Angle Noise (eta):");
-	    	while(eta == null || eta <= 0) {
-		    	eta = stringToDouble(scanner.nextLine());
-		    }
-		}
-	    
-	    System.out.println("Enter Area Length:");
-    	Integer selectedAreaLength = null;
-	    while(selectedAreaLength == null || selectedAreaLength <= 0) {
-	    	selectedAreaLength = stringToInt(scanner.nextLine());
-	    }
-	    areaBorderLength = selectedAreaLength;
+		smallParticleCount = selectedParticleCount;
 	    
 	    System.out.println("Enter Time Limit:");
     	Integer selectedTimeLimit = null;
@@ -93,57 +62,45 @@ public class Configuration {
 	}
 	
 	/* Parameters must have already been requested */
-	public static void generateRandomInputFilesAndParseConfiguration(List<Particle> particles) {
-		generateRandomInputFiles(particleCount, areaBorderLength);
-		parseStaticConfiguration(particles);
-		parseDynamicConfiguration(particles);
+	public static List<Particle> generateRandomInputFilesAndParseConfiguration() {
+		generateRandomInputFile();
+		List<Particle> particles = parseConfiguration();
 		if(isSingleRunMode())
 			generateOvitoOutputFile();
+		return particles;
 	}
 	
-	private static void parseStaticConfiguration(List<Particle> particles) {
-		try(BufferedReader br = new BufferedReader(new FileReader(staticFileName))) {
+	private static List<Particle> parseConfiguration() {
+		List<Particle> particles = new ArrayList<>();
+		
+		try(BufferedReader br = new BufferedReader(new FileReader(inputFileName))) {
+			/* Time (0) */
+			br.readLine();
+			
+			/* Big Particle Properties */
 			String line = br.readLine();
-			if((particleCount = stringToInt(line)) == null || particleCount < 1) {
-				failWithMessage("Invalid or missing particle count (" + line + ").");
-			}
-			line = br.readLine();
-			if((areaBorderLength = stringToInt(line)) == null || areaBorderLength < 1) {
-				failWithMessage("Invalid or missing area border length (" + line + ").");
-			}
-			for(int i = 0; i < particleCount; i++) {
+			if(line == null)
+				failWithMessage("Particles do not match particle count.");
+			String[] attributes = line.split(" ");
+			attributes = removeSpaces(attributes);
+			setParticleProperties(particles, attributes, true);
+			
+			/* Small Particle Properties */
+			for(int i = 0; i < smallParticleCount; i++) {
 				line = br.readLine();
 				if(line == null)
 					failWithMessage("Particles do not match particle count.");
-				String[] attributes = line.split(" ");
+				attributes = line.split(" ");
 				attributes = removeSpaces(attributes);
-				particles.add(validateParticle(attributes));
+				setParticleProperties(particles, attributes, false);
+				// ADD PARTICLE
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
 		
-		//System.out.println("Static configuration loaded.");
-	}
-	
-	private static void parseDynamicConfiguration(List<Particle> particles) {		
-		try(BufferedReader br = new BufferedReader(new FileReader(dynamicFileName))) {
-			String line = br.readLine();
-			for(int i = 0; i < particleCount; i++) {
-				line = br.readLine();
-				if(line == null)
-					failWithMessage("Particles do not match particle count.");
-				String[] attributes = line.split(" ");
-				attributes = removeSpaces(attributes);
-				setDynamicParticleAttributes(particles.get(i), attributes);
-			}
-		} catch(Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-		
-		//System.out.println("Dynamic configuration loaded.");
+		return particles;
 	}
 	
 	private static String[] removeSpaces(String[] array) {
@@ -151,6 +108,22 @@ public class Configuration {
 		List<String> filteredList = list.stream().filter(s -> !s.equals("") && !s.equals(" ")).collect(Collectors.toList());
 		String[] newArray = new String[filteredList.size()];
 		return filteredList.toArray(newArray);
+	}
+	
+	private static void setParticleProperties(List<Particle> particles, String[] attributes, boolean isBigParticle) {
+		Double x = null;
+		Double y = null;
+		Double vx = null;
+		Double vy = null;
+		if(attributes.length != 4 || (x = stringToDouble(attributes[0])) == null || (y = stringToDouble(attributes[1])) == null
+			|| (vx = stringToDouble(attributes[2])) == null || (vy = stringToDouble(attributes[3])) == null) {
+				failWithMessage(attributes[0] + ", " + attributes[1] + ", " + attributes[2] + ", " + attributes[3] + " are invalid attributes.");
+		}
+		
+		if(isBigParticle)
+			particles.add(new Particle(BIG_PARTICLE_RADIUS, BIG_PARTICLE_MASS, x, y, vx, vy));
+		else
+			particles.add(new Particle(SMALL_PARTICLE_RADIUS, SMALL_PARTICLE_MASS, x, y, vx, vy));
 	}
 	
 	private static Integer stringToInt(String s) {
@@ -178,73 +151,58 @@ public class Configuration {
 		System.exit(1);
 	}
 	
-	private static Particle validateParticle(String[] attributes) {
-		Double radius = null;
-		if(attributes.length != 1
-			|| (radius = stringToDouble(attributes[0])) == null || radius < 0) {
-				failWithMessage(attributes[0] + " is an invalid Particle.");
-			}
-		return new Particle(radius, 1);
-	}
-	
-	private static void setDynamicParticleAttributes(Particle particle, String[] attributes) {
-		Double x = null;
-		Double y = null;
-		Double vx = null;
-		Double vy = null;
-		if(attributes.length != 4
-			|| (x = stringToDouble(attributes[0])) == null || x < particle.getRadius() || x > areaBorderLength - particle.getRadius()
-			|| (y = stringToDouble(attributes[1])) == null || y < particle.getRadius() || y > areaBorderLength - particle.getRadius()
-			|| (vx = stringToDouble(attributes[2])) == null
-			|| (vy = stringToDouble(attributes[3])) == null) {
-				failWithMessage(attributes[0] + ", " + attributes[1] + ", " + attributes[2] + ", " + attributes[3] + " are invalid attributes.");
-			}
-		particle.setPosition(x, y);
-		particle.setVelocity(vx, vy);
-	}
-	
-	private static void generateRandomInputFiles(int particleCount, int areaBorderLength) {
-		generateRandomStaticInputFile(particleCount, areaBorderLength);
-		generateRandomDynamicInputFile(particleCount, areaBorderLength);
-	}
-	
-	private static void generateRandomStaticInputFile(int particleCount, int areaBorderLength) {
-		File staticInputFile = new File(staticFileName);
-		staticInputFile.delete();
-		try(FileWriter fw = new FileWriter(staticInputFile)) {
-			staticInputFile.createNewFile();
-			fw.write(particleCount + "\n");
-			fw.write(areaBorderLength + "\n");
-			for(int i = 0; i < particleCount; i++) {
-				fw.write("0\n");
-			}
-		} catch (IOException e) {
-			System.err.println("Failed to create static input file.");
-			e.printStackTrace();
-		}
-	}
-	
-	private static void generateRandomDynamicInputFile(int particleCount, int areaBorderLength) {
-		File dynamicInputFile = new File(dynamicFileName);
-		dynamicInputFile.delete();
-		try(FileWriter fw = new FileWriter(dynamicInputFile)) {
-			dynamicInputFile.createNewFile();
+	/* Time (0) - Big Particle Properties - Small Particles Properties */
+	private static List<Particle> generateRandomInputFile() {
+		List<Particle> particles = new ArrayList<>();
+		File inputFile = new File(inputFileName);
+		inputFile.delete();
+		try(FileWriter fw = new FileWriter(inputFile)) {
+			inputFile.createNewFile();
 			fw.write("0\n");
+			
+			particles.add(new Particle(BIG_PARTICLE_RADIUS, new Point2D.Double(BIG_PARTICLE_INIT_POSITION.getX(), BIG_PARTICLE_INIT_POSITION.getY())));
+			fw.write(BIG_PARTICLE_INIT_POSITION.getX() + " " + BIG_PARTICLE_INIT_POSITION.getY() 
+				+ " " + BIG_PARTICLE_INIT_VELOCITY + " " + BIG_PARTICLE_INIT_VELOCITY + "\n");
+			
 			Random r = new Random();
-			for(int i = 0; i < particleCount; i++) {
-				double randomPositionX = areaBorderLength * r.nextDouble();
-				double randomPositionY = areaBorderLength * r.nextDouble();
+			for(int i = 0; i < smallParticleCount; i++) {
+				double randomPositionX = 0;
+				double randomPositionY = 0;
+				boolean isValidPosition = false;
+				
+				while(!isValidPosition) {
+					randomPositionX = (AREA_BORDER_LENGTH - 2 * SMALL_PARTICLE_RADIUS) * r.nextDouble() + SMALL_PARTICLE_RADIUS;
+					randomPositionY = (AREA_BORDER_LENGTH - 2 * SMALL_PARTICLE_RADIUS) * r.nextDouble() + SMALL_PARTICLE_RADIUS;
+					isValidPosition = validateParticlePosition(particles, randomPositionX, randomPositionY, SMALL_PARTICLE_RADIUS);
+				}
+				
+				double randomVelocity = SMALL_PARTICLE_MAX_VELOCITY * r.nextDouble();
 				double angle = 2 * Math.PI * r.nextDouble();
-				double randomVelocityX = Math.cos(angle) * velocity;
-				double randomVelocityY = Math.sin(angle) * velocity;
+				double randomVelocityX = Math.cos(angle) * randomVelocity;
+				double randomVelocityY = Math.sin(angle) * randomVelocity;
+				
+				particles.add(new Particle(SMALL_PARTICLE_RADIUS, new Point2D.Double(randomPositionX, randomPositionY)));
 				fw.write(randomPositionX + " " + randomPositionY + " " + randomVelocityX + " " + randomVelocityY + "\n");
 			}
 		} catch (IOException e) {
 			System.err.println("Failed to create dynamic input file.");
 			e.printStackTrace();
 		}
+		
+		return particles;
 	}
 	
+	private static boolean validateParticlePosition(List<Particle> particles, double randomPositionX, double randomPositionY, double radius) {
+		if(particles.isEmpty())
+			return true;
+		for(Particle p : particles) {
+			if(Math.sqrt(Math.pow(p.getPosition().getX() - randomPositionX, 2) + Math.pow(p.getPosition().getY() - randomPositionY, 2))
+					< (p.getRadius() + radius))
+				return false;
+		}
+		return true;
+	}
+
 	private static void generateOvitoOutputFile() {
 		File outputFile = new File("./ovito_output.xyz");
 		outputFile.delete();
@@ -259,10 +217,9 @@ public class Configuration {
 	public static void writeOvitoOutputFile(int time, List<Particle> particles) {
 		File outputFile = new File("ovito_output.xyz");
 		try(FileWriter fw = new FileWriter(outputFile, true)) {
-			fw.write(particleCount + "\n");
-			fw.write("Lattice=\"" + areaBorderLength + " 0.0 0.0 0.0 " + areaBorderLength 
-				+ " 0.0 0.0 0.0 " + areaBorderLength 
-				+ "\" Properties=id:I:1:radius:R:1:pos:R:2:velo:R:2:color:R:3 Time=" + time + ".0\n");
+			fw.write((smallParticleCount + 1) + "\n");
+			fw.write("Lattice=\"" + AREA_BORDER_LENGTH * 2 + " 0.0 0.0 0.0 " + AREA_BORDER_LENGTH * 2 + " 0.0 0.0 0.0 " 
+			+ AREA_BORDER_LENGTH * 2 + "\" Properties=id:I:1:radius:R:1:mass:R:1:pos:R:2:velo:R:2\n"/* Time=" + time + ".0\n"*/);
 			for(Particle p : particles) {
 				writeOvitoParticle(fw, p);
 			}
@@ -273,79 +230,13 @@ public class Configuration {
 	}
 	
 	private static void writeOvitoParticle(FileWriter fw, Particle particle) throws IOException {
-		fw.write(particle.getId() + " " + particle.getRadius() + " " + particle.getPosition().x + " "
-				+ particle.getPosition().y + " " + particle.getVelocity().x + " " + particle.getVelocity().y + " ");
-		
-		double angle = particle.getVelocityAngle();
-		fw.write(((Math.cos(angle) + 1) / 2) + " " + ((Math.sin(angle) + 1) / 2) + " " + Math.tan((angle + Math.PI) / 8));
+		fw.write(particle.getId() + " " + particle.getRadius() + " " + particle.getMass() + " " + particle.getPosition().x + " "
+				+ particle.getPosition().y + " " + particle.getVelocity().x + " " + particle.getVelocity().y);
 		fw.write('\n');
 	}
-	
-	public static void writeEtaTestResultsToOutputFile(List<Double> averageOrderParameters, List<Double> standardDeviations) {
-		File outputFile = new File("multiple_tests_eta_output.txt");
-		outputFile.delete();
-		try(FileWriter fw = new FileWriter(outputFile)) {
-			outputFile.createNewFile();
-			for(int i = 0; i < averageOrderParameters.size(); i++) {
-				fw.write(String.format(Locale.US, "%.2g", (ETA_TEST_STEP * i)) + " " + averageOrderParameters.get(i) 
-				+ " " + standardDeviations.get(i) + "\n");
-			}
-		} catch (IOException e) {
-			System.err.println("Failed to write multiple tests output file.");
-			e.printStackTrace();
-		}		
-	}
 
-	public static void writeDensityTestResultsToOutputFile(List<Double> averageOrderParameters, List<Double> standardDeviations) {
-		File outputFile = new File("multiple_tests_density_output.txt");
-		outputFile.delete();
-		try(FileWriter fw = new FileWriter(outputFile)) {
-			outputFile.createNewFile();
-			int areaLength = Configuration.getAreaBorderLength();
-			for(int i = 1; i < averageOrderParameters.size() + 1; i++) {
-				fw.write((DENSITY_TEST_PARTICLE_STEP * i) / (double)(areaLength * areaLength)
-						+ " " + averageOrderParameters.get(i-1)	+ " " + standardDeviations.get(i-1) + "\n");
-			}
-		} catch (IOException e) {
-			System.err.println("Failed to write multiple tests output file.");
-			e.printStackTrace();
-		}
-	}
-
-	public static int getParticleCount() {
-		return particleCount;
-	}
-
-	public static void setParticleCount(int particleCount) {
-		Configuration.particleCount = particleCount;
-	}
-
-	public static int getAreaBorderLength() {
-		return areaBorderLength;
-	}
-	
-	public static double getInteractionRadius() {
-		return interactionRadius;
-	}
-	
-	public static Integer getM() {
-		return m;
-	}
-	
-	public static boolean isOptimalM() {
-		return isOptimalM;
-	}
-	
-	public static double getVelocity() {
-		return velocity;
-	}
-	
-	public static double getEta() {
-		return eta;
-	}
-	
-	public static void setEta(double newEta) {
-		eta = newEta;
+	public static int getSmallParticleCount() {
+		return smallParticleCount;
 	}
 	
 	public static int getTimeLimit() {
@@ -360,11 +251,4 @@ public class Configuration {
 		return mode == Mode.COMMON_TEST;
 	}
 	
-	public static boolean isEtaTestMode() {
-		return mode == Mode.ETA_TEST;
-	}
-	
-	public static boolean isDensityTestMode() {
-		return mode == Mode.DENSITY_TEST;
-	}
 }

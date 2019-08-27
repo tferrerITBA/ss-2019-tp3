@@ -5,9 +5,7 @@ import java.util.Optional;
 
 public enum Mode {
 	SINGLE_RUN (0), 
-	COMMON_TEST (1),
-	ETA_TEST (2),
-	DENSITY_TEST (3);
+	COMMON_TEST (1);
 	
 	private int mode;
 	
