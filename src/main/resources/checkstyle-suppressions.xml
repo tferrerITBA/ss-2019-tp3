@@ -7,6 +7,9 @@
 <suppressions>
     <suppress checks="Javadoc" files="."/>
     <suppress checks="JavadocStyleCheck" files="."/>
+    <suppress checks="JavadocType" files="." />
+    <suppress checks="JavadocVariable" files="." />
+    <suppress checks="JavadocMethod" files="." />
 </suppressions>
 <!--<?xml version="1.0" ?>-->
 

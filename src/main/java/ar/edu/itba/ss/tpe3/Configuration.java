@@ -1,4 +1,4 @@
-package ar.edu.itba.ss.tpe2;
+package ar.edu.itba.ss.tpe3;
 
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
