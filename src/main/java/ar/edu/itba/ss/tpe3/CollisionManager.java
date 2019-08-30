@@ -10,8 +10,8 @@ import java.util.stream.Stream;
 public class CollisionManager {
 
     private final Grid grid;
-    private final List<Collision> particleCollisions;
-    private final List<Collision> borderCollisions;
+    private final List<ParticleCollision> particleCollisions;
+    private final List<BorderCollision> borderCollisions;
 
     public CollisionManager(final Grid grid) {
         this.grid = grid;
@@ -107,10 +107,28 @@ public class CollisionManager {
     }
 
     private void updateCollisionTimes(final Collision firstCollision) {
+        updateCollisions(firstCollision.getParticle(), firstCollision.getTime());
         if(firstCollision instanceof ParticleCollision) {
-            
-        } else if(firstCollision instanceof BorderCollision) {
+            updateCollisions(((ParticleCollision) firstCollision).getOtherParticle(),
+                    firstCollision.getTime());
+        }
+    }
 
+    private void updateCollisions(final Particle particle, final double firstCollisionTime) {
+        for(ParticleCollision collision : particleCollisions) {
+            if(collision.getParticle().equals(particle)
+                || collision.getOtherParticle().equals(particle)) {
+                collision.updateTime();
+            } else {
+                collision.updateTime(firstCollisionTime);
+            }
+        }
+        for(BorderCollision collision : borderCollisions) {
+            if(collision.getParticle().equals(particle)) {
+                collision.updateTime();
+            } else {
+                collision.updateTime(firstCollisionTime);
+            }
         }
     }
 

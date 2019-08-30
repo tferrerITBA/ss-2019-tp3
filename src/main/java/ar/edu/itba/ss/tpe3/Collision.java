@@ -11,6 +11,10 @@ public abstract class Collision {
 
     public abstract void updateTime();
 
+    public void updateTime(double deltaTime) {
+        time -= deltaTime;
+    }
+
     public Particle getParticle() {
         return particle;
     }
