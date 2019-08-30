@@ -223,7 +223,7 @@ public final class Configuration {
         try(FileWriter fw = new FileWriter(outputFile, true)) {
             fw.write((smallParticleCount + 1) + "\n");
             fw.write("Lattice=\"" + AREA_BORDER_LENGTH * 2 + " 0.0 0.0 0.0 " + AREA_BORDER_LENGTH * 2 + " 0.0 0.0 0.0 "
-                    + AREA_BORDER_LENGTH * 2 + "\" Properties=id:I:1:radius:R:1:mass:R:1:pos:R:2:velo:R:2\n"/* Time=" + time + ".0\n"*/);
+                    + AREA_BORDER_LENGTH * 2 + "\" Properties=id:I:1:radius:R:1:mass:R:1:pos:R:2:velo:R:2 Time=" + time + ".0\n");
             for(Particle p : particles) {
                 writeOvitoParticle(fw, p);
             }

@@ -13,8 +13,6 @@ public class ParticleCollision extends Collision {
     }
 
     public void updateTime() {
-        Point2D.Double deltaPosition = getDeltaPosition();
-        Point2D.Double deltaVelocity = getDeltaVelocity();
 
         double deltaVDeltaP = getDeltaVDeltaP();
         double deltaVDeltaV = getDeltaVDeltaV();
@@ -27,11 +25,6 @@ public class ParticleCollision extends Collision {
             time = Double.POSITIVE_INFINITY;
         } else {
             time = - ((deltaVDeltaP + Math.sqrt(d)) / deltaVDeltaV);
-        }
-        
-        if(time.equals(Double.NEGATIVE_INFINITY)) {
-        	System.out.println("Border Collision - Time is -Inf: " + deltaVDeltaP + " " + d + " " + deltaVDeltaV);
-        	throw new IllegalStateException("ERROR");
         }
     }
 

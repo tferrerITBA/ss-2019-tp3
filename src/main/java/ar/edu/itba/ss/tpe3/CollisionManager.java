@@ -22,26 +22,15 @@ public class CollisionManager {
     public void executeAlgorithm() {
         initializeCollisions();
         for(int i = 0; i < Configuration.getTimeLimit(); i++) {
-            if(Configuration.isSingleRunMode())
+        	if(Configuration.isSingleRunMode())
                 Configuration.writeOvitoOutputFile(i, grid.getParticles());
 
             Collision firstCollision = getFirstCollision();
             grid.updateParticles(firstCollision.getTime());
-
             updateCollisionVelocities(firstCollision);
-            printList();
-            System.out.println("MINIMUM " + firstCollision.getTime());
+            
             updateCollisionTimes(firstCollision);
         }
-    }
-
-    public void printList() {
-        for(ParticleCollision c : particleCollisions)
-            System.out.println("\n id_1: " + c.getParticle().getId() +
-                    "; id_2: " + c.getOtherParticle().getId() + "; time: " + c.getTime() + "");
-        for(BorderCollision c : borderCollisions)
-            System.out.println("id: " + c.getParticle().getId() +
-                    "; Border " + c.getBorder() + "; time: " + c.getTime());
     }
 
     private void initializeCollisions() {
@@ -114,7 +103,6 @@ public class CollisionManager {
                 (impulse * collision.getDeltaX()) / collision.getSigma(),
                 (impulse * collision.getDeltaY()) / collision.getSigma()
         );
-        System.out.println("x: " + pd.getX() + "; y:" + pd.getY());
         return pd;
     }
 
@@ -142,24 +130,18 @@ public class CollisionManager {
     private void updateCollisions(final Particle particle, final Particle otherParticle, final double firstCollisionTime) {
     	
     	for(ParticleCollision collision : particleCollisions) {
-        	System.out.print(collision.getParticle().getId() + " " + collision.getOtherParticle().getId() + " PREVIOUS TIME: " + collision.getTime() + " ");
-            if(particlesInvolvedInCollision(collision, particle, otherParticle)) {
+        	if(particlesInvolvedInCollision(collision, particle, otherParticle)) {
             	collision.updateTime();
-            	System.out.print("NEXT TIME: " + collision.getTime() + " \n");
             } else {
                 collision.updateTime(firstCollisionTime);
-                System.out.print("NEXT TIME: " + collision.getTime() + " \n");
             }
         }
     	
         for(BorderCollision collision : borderCollisions) {
-        	System.out.print(collision.getParticle().getId() + " " + collision.getBorder() + " PREVIOUS TIME: " + collision.getTime() + " ");
-            if(collision.getParticle().equals(particle)) {
+        	if(collision.getParticle().equals(particle) || collision.getParticle().equals(otherParticle)) {
                 collision.updateTime();
-                System.out.print("NEXT TIME: " + collision.getTime() + " \n");
             } else {
                 collision.updateTime(firstCollisionTime);
-                System.out.print("NEXT TIME: " + collision.getTime() + " \n");
             }
         }
     }

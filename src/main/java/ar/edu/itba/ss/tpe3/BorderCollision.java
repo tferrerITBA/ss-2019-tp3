@@ -21,8 +21,6 @@ public class BorderCollision extends Collision {
                 (gridDimension - particle.getRadius() - positionComponent) / velocityComponent
                 : (particle.getRadius() - positionComponent) / velocityComponent
         );
-        if(time.equals(Double.NEGATIVE_INFINITY))
-        	System.out.println("Border Collision - Time is -Inf: " + positionComponent + " " + velocityComponent);
     }
 
     public Border getBorder() {

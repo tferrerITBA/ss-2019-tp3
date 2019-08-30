@@ -1,6 +1,5 @@
 package ar.edu.itba.ss.tpe3;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -15,23 +14,12 @@ public class Grid {
         this.particles = particles;
     }
 
-    public void updateParticles(double deltaTime) {
-        List<Particle> updatedParticles = new ArrayList<>(particles.size()); // NO CLONAR, GUARDAR DOUBLES NOMAS
+    public void updateParticles(final double deltaTime) {
         for(Particle p : particles) {
-            Particle updatedParticle = p.clone();
             double newPositionX = p.getPosition().getX() + p.getVelocity().getX() * deltaTime;
             double newPositionY = p.getPosition().getY() + p.getVelocity().getY() * deltaTime;
-            updatedParticle.setPosition(newPositionX, newPositionY);
-            if(((Double)newPositionX).equals(Double.NEGATIVE_INFINITY))
-            	System.out.println("ERROR: " + newPositionX + " " + p.getPosition().getX() + " " + p.getVelocity().getX() + " " + deltaTime);
-            if(((Double)newPositionY).equals(Double.NEGATIVE_INFINITY))
-            	System.out.println("ERROR: " + newPositionY + " " + p.getPosition().getY() + " " + p.getVelocity().getY() + " " + deltaTime);
-            updatedParticles.add(updatedParticle);
+            p.setPosition(newPositionX, newPositionY);
         }
-        for(int i = 0; i < particles.size(); i++) {
-            particles.get(i).setPosition(updatedParticles.get(i).getPosition().getX(), updatedParticles.get(i).getPosition().getY());
-        }
-        //setParticles(updatedParticles);
     }
 
     public double getDensity() {
