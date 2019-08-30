@@ -22,11 +22,13 @@ public class Grid {
             double newPositionX = p.getPosition().getX() + p.getVelocity().getX() * deltaTime;
             double newPositionY = p.getPosition().getY() + p.getVelocity().getY() * deltaTime;
             updatedParticle.setPosition(newPositionX, newPositionY);
-
+            if(((Double)newPositionX).equals(Double.NEGATIVE_INFINITY))
+            	System.out.println("ERROR: " + newPositionX + " " + p.getPosition().getX() + " " + p.getVelocity().getX() + " " + deltaTime);
+            if(((Double)newPositionY).equals(Double.NEGATIVE_INFINITY))
+            	System.out.println("ERROR: " + newPositionY + " " + p.getPosition().getY() + " " + p.getVelocity().getY() + " " + deltaTime);
             updatedParticles.add(updatedParticle);
         }
         for(int i = 0; i < particles.size(); i++) {
-            System.out.println(updatedParticles.get(i).getPosition());
             particles.get(i).setPosition(updatedParticles.get(i).getPosition().getX(), updatedParticles.get(i).getPosition().getY());
         }
         //setParticles(updatedParticles);

@@ -13,6 +13,10 @@ public abstract class Collision {
 
     public void updateTime(double deltaTime) {
         time -= deltaTime;
+        if(time.equals(Double.NEGATIVE_INFINITY)) {
+        	System.out.println("Unknown Collision - Time is -Inf: " + deltaTime);
+        	throw new IllegalStateException("ERROR");
+        }
     }
 
     public Particle getParticle() {

@@ -28,6 +28,11 @@ public class ParticleCollision extends Collision {
         } else {
             time = - ((deltaVDeltaP + Math.sqrt(d)) / deltaVDeltaV);
         }
+        
+        if(time.equals(Double.NEGATIVE_INFINITY)) {
+        	System.out.println("Border Collision - Time is -Inf: " + deltaVDeltaP + " " + d + " " + deltaVDeltaV);
+        	throw new IllegalStateException("ERROR");
+        }
     }
 
     public double getDeltaX() {
