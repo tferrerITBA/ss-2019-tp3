@@ -1,5 +1,6 @@
 package ar.edu.itba.ss.tpe3;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -29,14 +30,7 @@ public class CollisionManager {
 
             updateCollisionVelocities(firstCollision);
 
-            for(Collision c : particleCollisions) {
-                // SI NO INTERFIERE RESTAR TIEMPO
-                // SINO CALCULAR NUEVO TIEMPO
-            }
-            for(Collision c : borderCollisions) {
-                // SI NO INTERFIERE RESTAR TIEMPO
-                // SINO CALCULAR NUEVO TIEMPO
-            }
+            updateCollisionTimes(firstCollision);
         }
     }
 
@@ -71,8 +65,15 @@ public class CollisionManager {
         Particle collisionParticle = collision.getParticle();
         if(collision instanceof ParticleCollision) {
             ParticleCollision particleCollision = (ParticleCollision) collision;
-            Particle collisionOtherParticle = particleCollision.getOtherParticle();
-            // TO-DO
+            Particle otherCollisionParticle = particleCollision.getOtherParticle();
+            double impulse = calculateImpulse(particleCollision);
+            final Point2D.Double impulseCoordinates = calculateImpulseCoordinates(particleCollision, impulse);
+
+            Point2D.Double newVelocities = calculateNewParticleCollisionVelocities(collisionParticle, impulseCoordinates);
+            collisionParticle.setVelocity(newVelocities);
+
+            newVelocities = calculateNewParticleCollisionVelocities(otherCollisionParticle, impulseCoordinates);
+            otherCollisionParticle.setVelocity(newVelocities);
         } else if(collision instanceof BorderCollision) {
             BorderCollision borderCollision = (BorderCollision) collision;
             if(borderCollision.getBorder().equals(Border.VERTICAL)) {
@@ -80,6 +81,36 @@ public class CollisionManager {
             } else {
                 collisionParticle.setVelocity(collisionParticle.getVelocity().getX(), - collisionParticle.getVelocity().getY());
             }
+        }
+    }
+
+    private double calculateImpulse(final ParticleCollision collision) {
+        final Particle p1 = collision.getParticle();
+        final Particle p2 = collision.getOtherParticle();
+        return (2 * p1.getMass() * p2.getMass()) * collision.getDeltaVDeltaP()
+                / (collision.getSigma() * (p1.getMass() + p2.getMass()));
+    }
+
+    private Point2D.Double calculateImpulseCoordinates(final ParticleCollision collision, double impulse) {
+        return new Point2D.Double(
+                (impulse * collision.getDeltaX()) / collision.getSigma(),
+                (impulse * collision.getDeltaY()) / collision.getSigma()
+        );
+    }
+
+    private Point2D.Double calculateNewParticleCollisionVelocities(
+            final Particle p, final Point2D.Double impulseCoordinates) {
+        return new Point2D.Double(
+                p.getVelocity().getX() + impulseCoordinates.getX() / p.getMass(),
+                p.getVelocity().getY() + impulseCoordinates.getY() / p.getMass()
+        );
+    }
+
+    private void updateCollisionTimes(final Collision firstCollision) {
+        if(firstCollision instanceof ParticleCollision) {
+            
+        } else if(firstCollision instanceof BorderCollision) {
+
         }
     }
 

@@ -98,6 +98,10 @@ public class Particle implements Cloneable {
         velocity.y = vy;
     }
 
+    public void setVelocity(Point2D.Double v) {
+        setVelocity(v.getX(), v.getY());
+    }
+
     public double getVelocityAngle() {
         return Math.atan2(velocity.y, velocity.x);
     }

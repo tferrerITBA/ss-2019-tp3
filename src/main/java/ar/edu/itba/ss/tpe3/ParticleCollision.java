@@ -13,15 +13,13 @@ public class ParticleCollision extends Collision {
     }
 
     public void updateTime() {
-        Point2D.Double deltaPosition = new Point2D.Double(particle.getPosition().getX() - otherParticle.getPosition().getX(),
-                particle.getPosition().getY() - otherParticle.getPosition().getY());
-        Point2D.Double deltaVelocity = new Point2D.Double(particle.getVelocity().getX() - otherParticle.getVelocity().getX(),
-                particle.getVelocity().getY() - otherParticle.getVelocity().getY());
+        Point2D.Double deltaPosition = getDeltaPosition();
+        Point2D.Double deltaVelocity = getDeltaVelocity();
 
-        double deltaVDeltaP = (deltaVelocity.getX() * deltaPosition.getX()) + (deltaVelocity.getY() * deltaPosition.getY());
-        double deltaVDeltaV = (deltaVelocity.getX() * deltaVelocity.getX()) + (deltaVelocity.getY() * deltaVelocity.getY());
-        double deltaPDeltaP = (deltaPosition.getX() * deltaPosition.getX()) + (deltaPosition.getY() * deltaPosition.getY());
-        double sigma = particle.getRadius() + otherParticle.getRadius();
+        double deltaVDeltaP = getDeltaVDeltaP();
+        double deltaVDeltaV = getDeltaVDeltaV();
+        double deltaPDeltaP = getDeltaPDeltaP();
+        double sigma = getSigma();
 
         double d = (deltaVDeltaP * deltaVDeltaP) - deltaVDeltaV * (deltaPDeltaP - (sigma * sigma));
 
@@ -30,6 +28,43 @@ public class ParticleCollision extends Collision {
         } else {
             time = - ((deltaVDeltaP + Math.sqrt(d)) / deltaVDeltaV);
         }
+    }
+
+    public double getDeltaX() {
+        return particle.getPosition().getX() - otherParticle.getPosition().getX();
+    }
+
+    public double getDeltaY() {
+        return particle.getPosition().getY() - otherParticle.getPosition().getY();
+    }
+
+    public Point2D.Double getDeltaVelocity() {
+        return new Point2D.Double(
+                particle.getVelocity().getX() - otherParticle.getVelocity().getX(),
+                particle.getVelocity().getY() - otherParticle.getVelocity().getY());
+    }
+
+    public Point2D.Double getDeltaPosition() {
+        return new Point2D.Double(getDeltaX(), getDeltaY());
+    }
+
+    public double getDeltaVDeltaP() {
+        return (getDeltaVelocity().getX() * getDeltaPosition().getX())
+                + (getDeltaVelocity().getY() * getDeltaPosition().getY());
+    }
+
+    public double getDeltaVDeltaV() {
+        return (getDeltaVelocity().getX() * getDeltaVelocity().getX())
+                + (getDeltaVelocity().getY() * getDeltaVelocity().getY());
+    }
+
+    public double getDeltaPDeltaP() {
+        return (getDeltaPosition().getX() * getDeltaPosition().getX())
+                + (getDeltaPosition().getY() * getDeltaPosition().getY());
+    }
+
+    public double getSigma() {
+        return particle.getRadius() + otherParticle.getRadius();
     }
 
     public Particle getOtherParticle() {
