@@ -1,6 +1,5 @@
 package ar.edu.itba.ss.tpe2;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -13,8 +12,8 @@ public class Main {
 		
 		if(Configuration.isSingleRunMode()) {
 			executeSingleRun();
-		} else if(Configuration.isCommonTestMode()) {
-			runMultipleTests();
+		} else if(Configuration.isMultipleTestMode()) {
+			executeMultipleTests();
 		}
 		
 		long endTime = System.nanoTime();
@@ -26,17 +25,18 @@ public class Main {
 		startTime = System.nanoTime();
 		List<Particle> particles = Configuration.generateRandomInputFilesAndParseConfiguration();
 		Grid grid = new Grid(particles);
-		// ALGO
-		Configuration.writeOvitoOutputFile(0, particles); // BORRAR
+		CollisionManager cm = new CollisionManager(grid);
+		cm.executeAlgorithm();
 	}
 	
-	private static void runMultipleTests() {
+	private static void executeMultipleTests() {
 		Configuration.requestParameters();
 		startTime = System.nanoTime();
 		for(int i = 0; i < Configuration.TEST_CYCLES; i++) {
 			List<Particle> particles = Configuration.generateRandomInputFilesAndParseConfiguration();
 			Grid grid = new Grid(particles);
-			// ALGO
+			CollisionManager cm = new CollisionManager(grid);
+			cm.executeAlgorithm();
 		}
 	}
 

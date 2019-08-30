@@ -34,7 +34,7 @@ public class Configuration {
 		Scanner scanner = new Scanner(System.in);
 		
 		Integer selectedMode = null;
-	    System.out.println("Enter Mode [0 -> Single Run; 1-> Common Test]: ");
+	    System.out.println("Enter Mode [0 -> Single Run; 1-> Multiple Tests]: ");
 	    while(selectedMode == null || selectedMode < 0 || selectedMode > 1) {
 	    	selectedMode = stringToInt(scanner.nextLine());
 	    }
@@ -247,8 +247,8 @@ public class Configuration {
 		return mode == Mode.SINGLE_RUN;
 	}
 	
-	public static boolean isCommonTestMode() {
-		return mode == Mode.COMMON_TEST;
+	public static boolean isMultipleTestMode() {
+		return mode == Mode.MULTIPLE_TEST;
 	}
 	
 }
