@@ -2,14 +2,13 @@ package ar.edu.itba.ss.tpe3;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
-public class Grid {
+public final class Grid {
 
-    private List<Particle> particles;
-    private double areaBorderLength;
+    private final List<Particle> particles;
+    private final double areaBorderLength;
 
-    public Grid(List<Particle> particles) {
+    public Grid(final List<Particle> particles) {
         this.areaBorderLength = Configuration.AREA_BORDER_LENGTH;
         this.particles = particles;
     }
@@ -32,11 +31,6 @@ public class Grid {
 
     public double getAreaBorderLength() {
         return areaBorderLength;
-    }
-
-    public void setParticles(List<Particle> newParticles) {
-        Objects.requireNonNull(newParticles);
-        particles = newParticles;
     }
 
 }

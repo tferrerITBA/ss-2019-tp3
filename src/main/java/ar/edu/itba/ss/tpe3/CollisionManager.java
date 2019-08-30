@@ -7,7 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class CollisionManager {
+public final class CollisionManager {
 
     private final Grid grid;
     private final List<ParticleCollision> particleCollisions;
@@ -28,7 +28,7 @@ public class CollisionManager {
             Collision firstCollision = getFirstCollision();
             grid.updateParticles(firstCollision.getTime());
             updateCollisionVelocities(firstCollision);
-            
+
             updateCollisionTimes(firstCollision);
         }
     }
@@ -44,11 +44,11 @@ public class CollisionManager {
         }
     }
 
-    private void initializeParticleCollision(Particle particle, Particle otherParticle) {
+    private void initializeParticleCollision(final Particle particle, final Particle otherParticle) {
         particleCollisions.add(new ParticleCollision(particle, otherParticle));
     }
 
-    private void initializeBorderCollisions(Particle particle) {
+    private void initializeBorderCollisions(final Particle particle) {
         borderCollisions.addAll(Arrays.asList(
                 new BorderCollision(particle, Border.HORIZONTAL, grid.getAreaBorderLength()),
                 new BorderCollision(particle, Border.VERTICAL, grid.getAreaBorderLength())
@@ -62,11 +62,11 @@ public class CollisionManager {
         	throw new IllegalStateException("Time for first collision is NaN.");
         if(Double.isInfinite(collision.getTime()))
         	throw new IllegalStateException("No collisions will occur.");
-        
+
         return collision;
     }
 
-    private void updateCollisionVelocities(Collision collision) {
+    private void updateCollisionVelocities(final Collision collision) {
         Particle collisionParticle = collision.getParticle();
         if(collision instanceof ParticleCollision) {
             ParticleCollision particleCollision = (ParticleCollision) collision;
@@ -107,7 +107,7 @@ public class CollisionManager {
     }
 
     private Point2D.Double calculateNewParticleCollisionVelocities(
-            final Particle p, final Point2D.Double impulseCoordinates, int sign) {
+            final Particle p, final Point2D.Double impulseCoordinates, final int sign) {
         return new Point2D.Double(
                 p.getVelocity().getX() + sign * impulseCoordinates.getX() / p.getMass(),
                 p.getVelocity().getY() + sign * impulseCoordinates.getY() / p.getMass()
@@ -122,13 +122,13 @@ public class CollisionManager {
         	updateCollisions(firstCollision.getParticle(), firstCollisionTime);
         }
     }
-    
+
     private void updateCollisions(final Particle particle, final double firstCollisionTime) {
     	updateCollisions(particle, null, firstCollisionTime);
     }
 
     private void updateCollisions(final Particle particle, final Particle otherParticle, final double firstCollisionTime) {
-    	
+	
     	for(ParticleCollision collision : particleCollisions) {
         	if(particlesInvolvedInCollision(collision, particle, otherParticle)) {
             	collision.updateTime();
@@ -136,7 +136,7 @@ public class CollisionManager {
                 collision.updateTime(firstCollisionTime);
             }
         }
-    	
+
         for(BorderCollision collision : borderCollisions) {
         	if(collision.getParticle().equals(particle) || collision.getParticle().equals(otherParticle)) {
                 collision.updateTime();

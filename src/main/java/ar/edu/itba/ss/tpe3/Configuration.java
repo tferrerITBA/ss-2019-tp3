@@ -233,7 +233,7 @@ public final class Configuration {
         }
     }
 
-    private static void writeOvitoParticle(FileWriter fw, Particle particle) throws IOException {
+    private static void writeOvitoParticle(final FileWriter fw, final Particle particle) throws IOException {
         fw.write(particle.getId() + " " + particle.getRadius() + " " + particle.getMass() + " " + particle.getPosition().x + " "
                 + particle.getPosition().y + " " + particle.getVelocity().x + " " + particle.getVelocity().y);
         fw.write('\n');

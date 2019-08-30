@@ -3,22 +3,22 @@ package ar.edu.itba.ss.tpe3;
 import java.awt.geom.Point2D;
 import java.util.Objects;
 
-public class Particle implements Cloneable {
+public final class Particle implements Cloneable {
 
     private static int count = 0;
 
     private int id;
-    private double radius;
+    private final double radius;
     private double mass;
-    private Point2D.Double position;
+    private final Point2D.Double position;
     private Point2D.Double velocity;
 
-    public Particle(double radius, Point2D.Double position) {
+    public Particle(final double radius, final Point2D.Double position) {
         this.radius = radius;
         this.position = position;
     }
 
-    public Particle(double radius, double mass) {
+    public Particle(final double radius, final double mass) {
         this.id = count++;
         this.radius = radius;
         this.mass = mass;
@@ -26,7 +26,7 @@ public class Particle implements Cloneable {
         this.velocity = new Point2D.Double();
     }
 
-    public Particle(double radius, double mass, double x, double y, double vx, double vy) {
+    public Particle(final double radius, final double mass, final double x, final double y, final double vx, final double vy) {
         this.id = count++;
         this.radius = radius;
         this.mass = mass;
@@ -34,7 +34,8 @@ public class Particle implements Cloneable {
         this.velocity = new Point2D.Double(vx, vy);
     }
 
-    private Particle(int id, double radius, double mass, double x, double y, double vx, double vy) {
+    private Particle(final int id, final double radius, final double mass, final double x, final double y,
+            final double vx, final double vy) {
         this.id = id;
         this.radius = radius;
         this.mass = mass;
@@ -43,7 +44,7 @@ public class Particle implements Cloneable {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if(this == o)
             return true;
         if(!(o instanceof Particle))
@@ -84,7 +85,7 @@ public class Particle implements Cloneable {
         return position;
     }
 
-    public void setPosition(double x, double y) {
+    public void setPosition(final double x, final double y) {
         position.x = x;
         position.y = y;
     }
@@ -93,12 +94,12 @@ public class Particle implements Cloneable {
         return velocity;
     }
 
-    public void setVelocity(double vx, double vy) {
+    public void setVelocity(final double vx, final double vy) {
         velocity.x = vx;
         velocity.y = vy;
     }
 
-    public void setVelocity(Point2D.Double v) {
+    public void setVelocity(final Point2D.Double v) {
         setVelocity(v.getX(), v.getY());
     }
 

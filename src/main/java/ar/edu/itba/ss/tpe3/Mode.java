@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.Optional;
 
 public enum Mode {
-    SINGLE_RUN (0),
-    MULTIPLE_TEST (1);
+    SINGLE_RUN(0),
+    MULTIPLE_TEST(1);
 
     private int mode;
 
-    Mode(int mode) {
+    Mode(final int mode) {
         this.mode = mode;
     }
 
@@ -17,7 +17,7 @@ public enum Mode {
         return mode;
     }
 
-    public static Optional<Mode> valueOf(int value) {
+    public static Optional<Mode> valueOf(final int value) {
         return Arrays.stream(values()).filter(m -> m.getMode() == value).findFirst();
     }
 }

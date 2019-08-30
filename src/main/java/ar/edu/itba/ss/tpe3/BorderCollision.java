@@ -1,6 +1,6 @@
 package ar.edu.itba.ss.tpe3;
 
-public class BorderCollision extends Collision {
+public final class BorderCollision extends Collision {
 
     private final Border border;
     private final double gridDimension;
@@ -17,8 +17,8 @@ public class BorderCollision extends Collision {
         double velocityComponent = border.equals(Border.VERTICAL) ? particle.getVelocity().getX() : particle.getVelocity().getY();
         int compare = border.equals(Border.VERTICAL) ? Double.compare(particle.getVelocity().getX(), 0.0)
                 : Double.compare(particle.getVelocity().getY(), 0.0);
-        time = ((compare == 0)?  Double.POSITIVE_INFINITY : (compare > 0)?
-                (gridDimension - particle.getRadius() - positionComponent) / velocityComponent
+        time = ((compare == 0)?  Double.POSITIVE_INFINITY
+        		: (compare > 0)? (gridDimension - particle.getRadius() - positionComponent) / velocityComponent
                 : (particle.getRadius() - positionComponent) / velocityComponent
         );
     }

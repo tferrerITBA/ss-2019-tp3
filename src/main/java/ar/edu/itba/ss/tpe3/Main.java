@@ -3,9 +3,13 @@ package ar.edu.itba.ss.tpe3;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class Main {
+public final class Main {
 
     private static long startTime;
+
+    private Main() {
+
+    }
 
     public static void main(String[] args) {
         Configuration.requestMode();

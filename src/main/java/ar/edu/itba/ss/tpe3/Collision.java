@@ -11,7 +11,7 @@ public abstract class Collision {
 
     public abstract void updateTime();
 
-    public void updateTime(double deltaTime) {
+    public void updateTime(final double deltaTime) {
         time -= deltaTime;
     }
 

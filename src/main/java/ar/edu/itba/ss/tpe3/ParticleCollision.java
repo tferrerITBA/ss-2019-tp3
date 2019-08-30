@@ -2,7 +2,7 @@ package ar.edu.itba.ss.tpe3;
 
 import java.awt.geom.Point2D;
 
-public class ParticleCollision extends Collision {
+public final class ParticleCollision extends Collision {
 
     private final Particle otherParticle;
 
