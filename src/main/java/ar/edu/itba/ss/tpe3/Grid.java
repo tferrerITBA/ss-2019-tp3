@@ -26,6 +26,7 @@ public class Grid {
             updatedParticles.add(updatedParticle);
         }
         for(int i = 0; i < particles.size(); i++) {
+            System.out.println(updatedParticles.get(i).getPosition());
             particles.get(i).setPosition(updatedParticles.get(i).getPosition().getX(), updatedParticles.get(i).getPosition().getY());
         }
         //setParticles(updatedParticles);

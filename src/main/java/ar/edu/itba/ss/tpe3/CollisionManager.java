@@ -29,9 +29,19 @@ public class CollisionManager {
             grid.updateParticles(firstCollision.getTime());
 
             updateCollisionVelocities(firstCollision);
+            printList();
 
             updateCollisionTimes(firstCollision);
         }
+    }
+
+    public void printList() {
+        for(ParticleCollision c : particleCollisions)
+            System.out.println("id_1: " + c.getParticle().getId() +
+                    "; id_2: " + c.getOtherParticle().getId() + "; time: " + c.getTime() + "\n");
+        for(BorderCollision c : borderCollisions)
+            System.out.println("id: " + c.getParticle().getId() +
+                    "; Border " + c.getBorder() + "; time: " + c.getTime());
     }
 
     private void initializeCollisions() {
@@ -69,10 +79,10 @@ public class CollisionManager {
             double impulse = calculateImpulse(particleCollision);
             final Point2D.Double impulseCoordinates = calculateImpulseCoordinates(particleCollision, impulse);
 
-            Point2D.Double newVelocities = calculateNewParticleCollisionVelocities(collisionParticle, impulseCoordinates, 1);
+            Point2D.Double newVelocities = calculateNewParticleCollisionVelocities(collisionParticle, impulseCoordinates, -1);
             collisionParticle.setVelocity(newVelocities);
 
-            newVelocities = calculateNewParticleCollisionVelocities(otherCollisionParticle, impulseCoordinates, -1);
+            newVelocities = calculateNewParticleCollisionVelocities(otherCollisionParticle, impulseCoordinates, 1);
             otherCollisionParticle.setVelocity(newVelocities);
         } else if(collision instanceof BorderCollision) {
             BorderCollision borderCollision = (BorderCollision) collision;
