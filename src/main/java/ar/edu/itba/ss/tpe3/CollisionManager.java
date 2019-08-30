@@ -69,10 +69,10 @@ public class CollisionManager {
             double impulse = calculateImpulse(particleCollision);
             final Point2D.Double impulseCoordinates = calculateImpulseCoordinates(particleCollision, impulse);
 
-            Point2D.Double newVelocities = calculateNewParticleCollisionVelocities(collisionParticle, impulseCoordinates);
+            Point2D.Double newVelocities = calculateNewParticleCollisionVelocities(collisionParticle, impulseCoordinates, 1);
             collisionParticle.setVelocity(newVelocities);
 
-            newVelocities = calculateNewParticleCollisionVelocities(otherCollisionParticle, impulseCoordinates);
+            newVelocities = calculateNewParticleCollisionVelocities(otherCollisionParticle, impulseCoordinates, -1);
             otherCollisionParticle.setVelocity(newVelocities);
         } else if(collision instanceof BorderCollision) {
             BorderCollision borderCollision = (BorderCollision) collision;
@@ -87,22 +87,26 @@ public class CollisionManager {
     private double calculateImpulse(final ParticleCollision collision) {
         final Particle p1 = collision.getParticle();
         final Particle p2 = collision.getOtherParticle();
-        return (2 * p1.getMass() * p2.getMass()) * collision.getDeltaVDeltaP()
+        final double delta = collision.getDeltaVDeltaP();
+        return (2 * p1.getMass() * p2.getMass()) * delta
                 / (collision.getSigma() * (p1.getMass() + p2.getMass()));
     }
 
-    private Point2D.Double calculateImpulseCoordinates(final ParticleCollision collision, double impulse) {
-        return new Point2D.Double(
+    private Point2D.Double calculateImpulseCoordinates(final ParticleCollision collision, final double impulse) {
+
+        Point2D.Double pd = new Point2D.Double(
                 (impulse * collision.getDeltaX()) / collision.getSigma(),
                 (impulse * collision.getDeltaY()) / collision.getSigma()
         );
+        System.out.println("x: " + pd.getX() + "; y:" + pd.getY());
+        return pd;
     }
 
     private Point2D.Double calculateNewParticleCollisionVelocities(
-            final Particle p, final Point2D.Double impulseCoordinates) {
+            final Particle p, final Point2D.Double impulseCoordinates, int sign) {
         return new Point2D.Double(
-                p.getVelocity().getX() + impulseCoordinates.getX() / p.getMass(),
-                p.getVelocity().getY() + impulseCoordinates.getY() / p.getMass()
+                p.getVelocity().getX() + sign * impulseCoordinates.getX() / p.getMass(),
+                p.getVelocity().getY() + sign * impulseCoordinates.getY() / p.getMass()
         );
     }
 
