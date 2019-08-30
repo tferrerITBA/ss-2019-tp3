@@ -130,7 +130,7 @@ public final class Configuration {
             particles.add(new Particle(SMALL_PARTICLE_RADIUS, SMALL_PARTICLE_MASS, x, y, vx, vy));
     }
 
-    private static Integer stringToInt(String s) {
+    private static Integer stringToInt(final String s) {
         Integer i = null;
         try {
             i = Integer.valueOf(s);
@@ -140,7 +140,7 @@ public final class Configuration {
         return i;
     }
 
-    private static Double stringToDouble(String s) {
+    private static Double stringToDouble(final String s) {
         Double d = null;
         try {
             d = Double.valueOf(s);
@@ -150,7 +150,7 @@ public final class Configuration {
         return d;
     }
 
-    private static void failWithMessage(String message) {
+    private static void failWithMessage(final String message) {
         System.err.println(message);
         System.exit(1);
     }
@@ -196,7 +196,7 @@ public final class Configuration {
         return particles;
     }
 
-    private static boolean validateParticlePosition(List<Particle> particles, double randomPositionX, double randomPositionY, double radius) {
+    private static boolean validateParticlePosition(final List<Particle> particles, final double randomPositionX, final double randomPositionY, final double radius) {
         if(particles.isEmpty())
             return true;
         for(Particle p : particles) {
@@ -218,7 +218,7 @@ public final class Configuration {
         }
     }
 
-    public static void writeOvitoOutputFile(int time, List<Particle> particles) {
+    public static void writeOvitoOutputFile(final int time, final List<Particle> particles) {
         File outputFile = new File("ovito_output.xyz");
         try(FileWriter fw = new FileWriter(outputFile, true)) {
             fw.write((smallParticleCount + 1) + "\n");
