@@ -10,6 +10,10 @@
     <suppress checks="JavadocType" files="." />
     <suppress checks="JavadocVariable" files="." />
     <suppress checks="JavadocMethod" files="." />
+    <suppress checks="LineLengthCheck" files="." />
+    <suppress checks="WhitespaceAfterCheck" files="." />
+    <suppress checks="WhitespaceAroundCheck" files="." />
+    <suppress checks="NeedBracesCheck" files="." />
 </suppressions>
 <!--<?xml version="1.0" ?>-->
 
