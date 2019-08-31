@@ -218,12 +218,12 @@ public final class Configuration {
         }
     }
 
-    public static void writeOvitoOutputFile(final int time, final List<Particle> particles) {
+    public static void writeOvitoOutputFile(final Double time, final List<Particle> particles) {
         File outputFile = new File("ovito_output.xyz");
         try(FileWriter fw = new FileWriter(outputFile, true)) {
             fw.write((smallParticleCount + 1) + "\n");
             fw.write("Lattice=\"" + AREA_BORDER_LENGTH * 2 + " 0.0 0.0 0.0 " + AREA_BORDER_LENGTH * 2 + " 0.0 0.0 0.0 "
-                    + AREA_BORDER_LENGTH * 2 + "\" Properties=id:I:1:radius:R:1:mass:R:1:pos:R:2:velo:R:2 Time=" + time + ".0\n");
+                    + AREA_BORDER_LENGTH * 2 + "\" Properties=id:I:1:radius:R:1:mass:R:1:pos:R:2:velo:R:2 Time=" + time + "\n");
             for(Particle p : particles) {
                 writeOvitoParticle(fw, p);
             }

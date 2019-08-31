@@ -22,13 +22,14 @@ public final class CollisionManager {
     public void executeAlgorithm() {
         initializeCollisions();
         for(int i = 0; i < Configuration.getTimeLimit(); i++) {
-        	if(Configuration.isSingleRunMode())
-                Configuration.writeOvitoOutputFile(i, grid.getParticles());
-
             Collision firstCollision = getFirstCollision();
-            grid.updateParticles(firstCollision.getTime());
+            Double collisionTime = firstCollision.getTime();
+            
+            if(Configuration.isSingleRunMode())
+                Configuration.writeOvitoOutputFile(collisionTime, grid.getParticles());
+            
+            grid.updateParticles(collisionTime);
             updateCollisionVelocities(firstCollision);
-
             updateCollisionTimes(firstCollision);
         }
     }
