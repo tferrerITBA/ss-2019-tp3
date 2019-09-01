@@ -1,8 +1,11 @@
 from models import Particle, Step, Simulation
+import glob
+
+def parseDirectory(directory):
+  return [parseFile(f) for f in glob.glob(directory + '/*')]
 
 def parseFile(filename):
   lines = [line.rstrip('\n') for line in open(filename)]
-
   steps = []
   while len(lines) > 0:
     steps.append(parseStep(lines))
