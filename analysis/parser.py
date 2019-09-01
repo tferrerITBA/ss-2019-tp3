@@ -1,5 +1,9 @@
 from models import Particle, Step, Simulation
 import glob
+import sys
+
+def parseDirectoryFromArgs():
+  return parseDirectory(sys.argv[1])
 
 def parseDirectory(directory):
   return [parseFile(f) for f in glob.glob(directory + '/*')]

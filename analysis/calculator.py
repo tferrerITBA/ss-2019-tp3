@@ -15,7 +15,7 @@ def squareList(lst):
 def averageLists(lists):
   return numpy.mean(numpy.array([ i for i in lists]), axis=0 )
 
-# Returns a linear regresion (slope and b) from a list of points
+# Returns a linear regresion (slope) from a list of points
 def linearRegression(data):
-  m,b = np.polyfit(range(len(data)), data, 1)
-  return [m, b]
+  m,b = numpy.polyfit(range(len(data)), data, 1)
+  return m
