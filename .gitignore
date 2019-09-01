@@ -33,3 +33,9 @@ hs_err_pid*
 target
 *.iml
 *.txt
+
+# Python cache
+__pycache__
+
+# MacOS
+.DS_Store
