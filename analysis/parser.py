@@ -1,9 +1,13 @@
 from models import Particle, Step, Simulation
 import glob
 import sys
+import os
 
 def parseDirectoryFromArgs():
   return parseDirectory(sys.argv[1])
+
+def parseModeFromArgs():
+  return int(sys.argv[2])
 
 def parseDirectory(directory):
   return [parseFile(f) for f in glob.glob(directory + '/*')]
@@ -13,8 +17,7 @@ def parseFile(filename):
   steps = []
   while len(lines) > 0:
     steps.append(parseStep(lines))
-  
-  return Simulation(steps)
+  return Simulation(steps, os.path.basename(filename))
 
 def parseStep(lines):
   nextLines = int(lines.pop(0))

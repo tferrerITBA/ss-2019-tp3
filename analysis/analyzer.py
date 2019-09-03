@@ -1,9 +1,10 @@
 from parser import parseDirectoryFromArgs
-from calculator import calculateDistance, squareList, averageLists, linearRegression, calculateDeltas, average, discreteRange, PDF
+from calculator import calculateDistance, squareList, averageLists, linearRegression, calculateDeltas, average, discreteRange, PDF, stdevLists
+from functools import reduce #python 3
 
 def getBallDistancesFromOrigin(simulation):
   firstBall = simulation.steps[0].ball
-  distances = [calculateDistance(firstBall.position(), step.ball.position()) for step in simulation.steps.getSecondHalf()]
+  distances = [calculateDistance(firstBall.position(), step.ball.position()) for step in simulation.getSecondHalf()]
   return distances
 
 # Not used yet
@@ -14,8 +15,8 @@ def getParticleDistancesFromOrigin(simulation, index = 5):
 
 def calculateCollisionFrequency(simulation):
   amountOfCollisions = len(simulation.steps)
-  totalSimualtionTime = simulation.steps[-1].time
-  return amountOfCollisions/totalSimualtionTime
+  totalSimulationTime = simulation.steps[-1].time
+  return amountOfCollisions/totalSimulationTime
 
 def calculateCollisionTimesAverage(simulation):
   accumulatedTimes = [step.time for step in simulation.steps]
@@ -25,16 +26,25 @@ def calculateCollisionTimesAverage(simulation):
 def calculateProbabilityCollisionTimesDistribution(simulation):
   accumulatedTimes = [step.time for step in simulation.steps]
   deltaTimes = calculateDeltas(accumulatedTimes)
-  hist, bin_edges = PDF(deltaTimes, 0.5)
-  return hist
+  return deltaTimes
+  # next lines calculate PDF manually, but the chart library does this automatically
+  hist, bin_edges = PDF(deltaTimes, 0.25)
+  return hist * calculateDeltas(bin_edges), bin_edges
 
+def calculateProbabilityVelocities(simulation):
+  lastThirdSteps = simulation.getLastThird()
+  listOfSpeedsTime0 = simulation.steps[0].getParticlesSpeed()
+  listOfSpeeds = [step.getParticlesSpeed() for step in lastThirdSteps]
+  speeds = reduce(lambda x,y: x+y,listOfSpeeds)
+  return speeds, listOfSpeedsTime0
+  # next lines calculate PDF manually, but the chart library does this automatically
+  hist, bin_edges = PDF(speeds, 0.2)
+  return hist * calculateDeltas(bin_edges)
 
 def calculateDiffusion(simulations, getDistanceFromOrigin = getBallDistancesFromOrigin):
   squaredDistances = [squareList(getDistanceFromOrigin(simulation)) for simulation in simulations]
   averageSquaredDistances = averageLists(squaredDistances)
-  print(squaredDistances)
-  diffusion = linearRegression(averageSquaredDistances)
-  return diffusion
-
-simulations = parseDirectoryFromArgs()
-print(calculateDiffusion(simulations))
+  # TODO: Preguntar si el error se calcula antes o despues de hacer el cuadrado.
+  deviations = stdevLists(squaredDistances)
+  diffusion, b = linearRegression(averageSquaredDistances)
+  return diffusion,b, averageSquaredDistances, deviations
