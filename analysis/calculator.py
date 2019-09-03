@@ -20,6 +20,11 @@ def calculateDeltas(lst):
 def averageLists(lists):
   return numpy.mean(numpy.array([ i for i in lists]), axis=0 )
 
+# Takes multiple lists, and returns a single list where each element is the std_dev of the elements
+# of the passed list in a specific index
+def stdevLists(lists):
+  return numpy.std(numpy.array([ i for i in lists]), axis=0 )
+
 # Returns the average of a list
 def average(lst):
   return numpy.mean(lst)
@@ -35,4 +40,4 @@ def PDF(lst, maxValue):
 # Returns a linear regresion (slope) from a list of points
 def linearRegression(data):
   m,b = numpy.polyfit(range(len(data)), data, 1)
-  return m
+  return m,b

@@ -49,3 +49,7 @@ def ex3_2():
     ax.set_title(f'Movimiento Browniano (N={len(simulation.steps[0].particles)}) - t=0') 
     fig.tight_layout()
     saveFig(fig, f'{simulation.name}--3_2--initial')
+
+def ex3_3():
+  diffusionSlope, diffusionB, averageSquaredDistances = calculateDiffusion()
+  print(f'Coeficiente de difusion aproximado: {diffusionSlope}')

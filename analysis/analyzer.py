@@ -1,5 +1,5 @@
 from parser import parseDirectoryFromArgs
-from calculator import calculateDistance, squareList, averageLists, linearRegression, calculateDeltas, average, discreteRange, PDF
+from calculator import calculateDistance, squareList, averageLists, linearRegression, calculateDeltas, average, discreteRange, PDF, stdevLists
 from functools import reduce #python 3
 
 def getBallDistancesFromOrigin(simulation):
@@ -44,5 +44,7 @@ def calculateProbabilityVelocities(simulation):
 def calculateDiffusion(simulations, getDistanceFromOrigin = getBallDistancesFromOrigin):
   squaredDistances = [squareList(getDistanceFromOrigin(simulation)) for simulation in simulations]
   averageSquaredDistances = averageLists(squaredDistances)
-  diffusion = linearRegression(averageSquaredDistances)
-  return diffusion
+  # TODO: Preguntar si el error se calcula antes o despues de hacer el cuadrado.
+  deviations = stdevLists(squaredDistances)
+  diffusion, b = linearRegression(averageSquaredDistances)
+  return diffusion,b, averageSquaredDistances, deviations
