@@ -26,15 +26,16 @@ def calculateCollisionTimesAverage(simulation):
 def calculateProbabilityCollisionTimesDistribution(simulation):
   accumulatedTimes = [step.time for step in simulation.steps]
   deltaTimes = calculateDeltas(accumulatedTimes)
+  return deltaTimes
+  # next lines calculate PDF manually, but the chart library does this automatically
   hist, bin_edges = PDF(deltaTimes, 0.25)
-  return hist * calculateDeltas(bin_edges)
+  return hist * calculateDeltas(bin_edges), bin_edges
 
 def calculateProbabilityVelocities(simulation):
   lastThirdSteps = simulation.getLastThird()
   listOfSpeeds = [step.getParticlesSpeed() for step in lastThirdSteps]
   speeds = reduce(lambda x,y: x+y,listOfSpeeds)
   hist, bin_edges = PDF(speeds, 0.2)
-  print(bin_edges)
   return hist * calculateDeltas(bin_edges)
 
 def calculateDiffusion(simulations, getDistanceFromOrigin = getBallDistancesFromOrigin):
@@ -42,6 +43,3 @@ def calculateDiffusion(simulations, getDistanceFromOrigin = getBallDistancesFrom
   averageSquaredDistances = averageLists(squaredDistances)
   diffusion = linearRegression(averageSquaredDistances)
   return diffusion
-
-simulations = parseDirectoryFromArgs()
-print(calculateDiffusion(simulations))

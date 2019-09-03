@@ -25,8 +25,9 @@ class Step:
     
 
 class Simulation:
-  def __init__(self, steps):
+  def __init__(self, steps, name):
     self.steps = steps
+    self.name = name
   def getSecondHalf(self):
     return self.steps[len(self.steps)//2:]
   def getLastThird(self):

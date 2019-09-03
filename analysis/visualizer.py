@@ -1,13 +1,30 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from analyzer import calculateCollisionFrequency, calculateCollisionTimesAverage, calculateProbabilityCollisionTimesDistribution
+from parser import parseDirectoryFromArgs
+import os
 
-def generateChart()
-  fig = plt.figure()
-  x = np.arange(10)
-  y = 2.5 * np.sin(x / 20 * np.pi)
-  yerr = np.linspace(0.05, 0.2, 10)
+OUTPUT_FOLDER = 'output'
+simulations = parseDirectoryFromArgs()
 
-  plt.errorbar(x, y + 3, yerr=yerr, label='both limits (default)')
+def saveFig(fig, name):
+  if not os.path.exists(OUTPUT_FOLDER):
+    os.makedirs(OUTPUT_FOLDER)
+  fig.savefig(f'{OUTPUT_FOLDER}/{name}.png')
+  
+def ex3_1():
+  for simulation in simulations:
+    print(f'Simulacion: {simulation.name}')
+    print(f'Frecuencia de colisiones (#/s):  {calculateCollisionFrequency(simulation)}')
+    print(f'Promedio de tiempos de colision:  {calculateCollisionTimesAverage(simulation)}')
+    times = calculateProbabilityCollisionTimesDistribution(simulation)
 
-  plt.legend(loc='lower right')
-  plt.show()
+    fig, ax = plt.subplots()
+    ax.hist(times, density=True, bins=100) 
+    ax.set_xlabel('Tiempos de colisión')
+    ax.set_ylabel('Densidad de probabilidad')
+    ax.set_title(f'Movimiento Browniano (N={len(simulation.steps[0].particles)})') 
+    fig.tight_layout()
+    saveFig(fig, f'{simulation.name}--3_1')
+
+ex3_1()
