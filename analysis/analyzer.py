@@ -33,8 +33,11 @@ def calculateProbabilityCollisionTimesDistribution(simulation):
 
 def calculateProbabilityVelocities(simulation):
   lastThirdSteps = simulation.getLastThird()
+  listOfSpeedsTime0 = simulation.steps[0].getParticlesSpeed()
   listOfSpeeds = [step.getParticlesSpeed() for step in lastThirdSteps]
   speeds = reduce(lambda x,y: x+y,listOfSpeeds)
+  return speeds, listOfSpeedsTime0
+  # next lines calculate PDF manually, but the chart library does this automatically
   hist, bin_edges = PDF(speeds, 0.2)
   return hist * calculateDeltas(bin_edges)
 
