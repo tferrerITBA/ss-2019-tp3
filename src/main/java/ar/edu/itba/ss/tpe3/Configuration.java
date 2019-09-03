@@ -27,6 +27,7 @@ public final class Configuration {
     private static final double SMALL_PARTICLE_MAX_VELOCITY = 0.1;
     private static final double BIG_PARTICLE_INIT_VELOCITY = 0;
     private static final Point2D.Double BIG_PARTICLE_INIT_POSITION = new Point2D.Double(AREA_BORDER_LENGTH / 2, AREA_BORDER_LENGTH / 2);
+    public static final double FIXED_INTERVAL = 0.5;
 
     private Configuration() {
 
@@ -218,6 +219,39 @@ public final class Configuration {
         }
     }
 
+    public static double writeOvitoFile(final double accumulatedTime, double deltaTime, double nextFrameTime, final List<Particle> particles) {
+        File outputFile = new File("ovito_output.xyz");
+
+        for(int i = 0; Double.compare(nextFrameTime, accumulatedTime) <= 0; i++) {
+            try(FileWriter fw = new FileWriter(outputFile, true)) {
+                fw.write((smallParticleCount + 1) + "\n");
+                fw.write("Lattice=\"" + AREA_BORDER_LENGTH * 2 + " 0.0 0.0 0.0 " + AREA_BORDER_LENGTH * 2 + " 0.0 0.0 0.0 "
+                        + AREA_BORDER_LENGTH * 2 + "\" Properties=id:I:1:radius:R:1:mass:R:1:pos:R:2:velo:R:2 Time=" + nextFrameTime + "\n");
+                for(Particle p : particles) {
+                    writeOvitoParticle(fw, p, deltaTime);
+                }
+            } catch (IOException e) {
+                System.err.println("Failed to write Ovito output file.");
+                e.printStackTrace();
+            }
+            nextFrameTime += FIXED_INTERVAL;
+            deltaTime += FIXED_INTERVAL;
+        }
+        return nextFrameTime;
+    }
+
+    private static void writeOvitoParticle(final FileWriter fw, final Particle particle, final double deltaTime)
+            throws IOException {
+        Point2D.Double newPosition = new Point2D.Double(
+                particle.getPosition().getX() + particle.getVelocity().getX() * deltaTime,
+                particle.getPosition().getY() + particle.getVelocity().getY() * deltaTime);
+
+        fw.write(particle.getId() + " " + particle.getRadius() + " " + particle.getMass() + " " + newPosition.getX() + " "
+                + newPosition.getY() + " " + particle.getVelocity().getX() + " " + particle.getVelocity().getY());
+        fw.write('\n');
+    }
+
+    @Deprecated
     public static void writeOvitoOutputFile(final Double time, final List<Particle> particles) {
         File outputFile = new File("ovito_output.xyz");
         try(FileWriter fw = new FileWriter(outputFile, true)) {
@@ -233,9 +267,10 @@ public final class Configuration {
         }
     }
 
+    @Deprecated
     private static void writeOvitoParticle(final FileWriter fw, final Particle particle) throws IOException {
-        fw.write(particle.getId() + " " + particle.getRadius() + " " + particle.getMass() + " " + particle.getPosition().x + " "
-                + particle.getPosition().y + " " + particle.getVelocity().x + " " + particle.getVelocity().y);
+        fw.write(particle.getId() + " " + particle.getRadius() + " " + particle.getMass() + " " + particle.getPosition().getX() + " "
+                + particle.getPosition().getY() + " " + particle.getVelocity().getX() + " " + particle.getVelocity().getY());
         fw.write('\n');
     }
 

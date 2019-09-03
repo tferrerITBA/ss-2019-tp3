@@ -21,19 +21,48 @@ public final class CollisionManager {
 
     public void executeAlgorithm() {
         initializeCollisions();
-        Double accumulatedTime = 0.0;
+        double accumulatedTime = 0.0;
+        double nextFrameTime = 0;
         for(int i = 0; i < Configuration.getTimeLimit(); i++) {
             Collision firstCollision = getFirstCollision();
-            Double collisionTime = firstCollision.getTime();
+
+            double collisionTime = firstCollision.getTime();
+            double lastAccumulatedTime = accumulatedTime;
             accumulatedTime += collisionTime;
-            
-            if(Configuration.isSingleRunMode())
-                Configuration.writeOvitoOutputFile(accumulatedTime, grid.getParticles());
+
+//          WRITE EVERY EVENT
+//            if(Configuration.isSingleRunMode()) {
+//                Configuration.writeOvitoOutputFile(accumulatedTime, grid.getParticles());
+//            }
+
+            if(Configuration.isSingleRunMode()
+                    && Double.compare(accumulatedTime, nextFrameTime) >= 0) {
+                nextFrameTime = Configuration.writeOvitoFile(
+                        accumulatedTime,
+                        nextFrameTime - lastAccumulatedTime,
+                        nextFrameTime,
+                        grid.getParticles()
+                );
+            }
+
+            if(isBigParticleBorderCollision(firstCollision)) {
+                System.out.println("Big Particle collided with border. Finishing...");
+                return;
+            }
             
             grid.updateParticles(collisionTime);
             updateCollisionVelocities(firstCollision);
             updateCollisionTimes(firstCollision);
         }
+    }
+
+    private boolean isBigParticleBorderCollision(Collision collision) {
+        boolean isBorderCollision = collision instanceof BorderCollision;
+        if(isBorderCollision) {
+            BorderCollision borderCollision = (BorderCollision) collision;
+            return collision.getParticle().getId() == 0;
+        }
+        return false;
     }
 
     private void initializeCollisions() {
