@@ -26,7 +26,17 @@ modifier = AffineTransformationModifier(
     transform_box = True, # in Ovito 2.9
     transformation = [[0.5, 0, 0, 0],
                       [0, 0.5, 0, 0],
-                      [0, 0, 0.5, 0]])
+                      [0, 0, 0.5, 0]]
+)
 
 node.modifiers.append(modifier)
+
+color_modifier = ColorCodingModifier(
+	particle_property = 'Particle Identifier',
+	start_value = 0,
+	end_value = node.compute().number_of_particles
+)
+
+node.modifiers.append(color_modifier)
+
 node.compute()
