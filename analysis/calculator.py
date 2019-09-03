@@ -24,11 +24,13 @@ def averageLists(lists):
 def average(lst):
   return numpy.mean(lst)
 
+# Like range, but with decimal steps
 def discreteRange(*args):
   return numpy.arange(*args)
 
+# Gets a probability histogram from a list
 def PDF(lst, maxValue):
-  return numpy.histogram(lst, bins=10, range=(0, maxValue), density=True)
+  return numpy.histogram(lst, bins=10, density=True) if maxValue == None else numpy.histogram(lst, bins=10, range=(0, maxValue), density=True)
 
 # Returns a linear regresion (slope) from a list of points
 def linearRegression(data):
