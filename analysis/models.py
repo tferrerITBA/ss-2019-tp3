@@ -16,7 +16,10 @@ class Step:
   def __init__(self, time, particles):
     self.time = time
     [self.ball, *self.particles] = particles
+    
 
 class Simulation:
   def __init__(self, steps):
     self.steps = steps
+  def getSecondHalf(self):
+    self.steps[len(simulation.steps)//2:]
