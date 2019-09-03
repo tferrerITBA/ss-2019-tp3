@@ -24,7 +24,7 @@ public final class Configuration {
     private static final double SMALL_PARTICLE_MASS = 0.1;
     private static final double BIG_PARTICLE_RADIUS = 0.05;
     private static final double BIG_PARTICLE_MASS = 100;
-    private static final double SMALL_PARTICLE_MAX_VELOCITY = 0.1;
+    private static double smallParticleMaxVelocity = 0.1;
     private static final double BIG_PARTICLE_INIT_VELOCITY = 0;
     private static final Point2D.Double BIG_PARTICLE_INIT_POSITION = new Point2D.Double(AREA_BORDER_LENGTH / 2, AREA_BORDER_LENGTH / 2);
     public static final double FIXED_INTERVAL = 0.5;
@@ -61,6 +61,14 @@ public final class Configuration {
             selectedTimeLimit = stringToInt(scanner.nextLine());
         }
         timeLimit = selectedTimeLimit;
+        
+        System.out.println("Enter Small Particle Maximum Velocity [0 -> Default]:");
+        Double selectedMaxVelocity = null;
+        while(selectedMaxVelocity == null || selectedMaxVelocity < 0) {
+        	selectedMaxVelocity = stringToDouble(scanner.nextLine());
+        }
+        if(selectedMaxVelocity > 0)
+        	smallParticleMaxVelocity = selectedMaxVelocity;
 
         scanner.close();
     }
@@ -181,7 +189,7 @@ public final class Configuration {
                     isValidPosition = validateParticlePosition(particles, randomPositionX, randomPositionY, SMALL_PARTICLE_RADIUS);
                 }
 
-                double randomVelocity = SMALL_PARTICLE_MAX_VELOCITY * r.nextDouble();
+                double randomVelocity = smallParticleMaxVelocity * r.nextDouble();
                 double angle = 2 * Math.PI * r.nextDouble();
                 double randomVelocityX = Math.cos(angle) * randomVelocity;
                 double randomVelocityY = Math.sin(angle) * randomVelocity;

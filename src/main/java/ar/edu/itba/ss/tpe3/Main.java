@@ -31,6 +31,7 @@ public final class Main {
         Grid grid = new Grid(particles);
         CollisionManager cm = new CollisionManager(grid);
         cm.executeAlgorithm();
+        System.out.println("Temperature: " + grid.getTemperature());
     }
 
     private static void executeMultipleTests() {
