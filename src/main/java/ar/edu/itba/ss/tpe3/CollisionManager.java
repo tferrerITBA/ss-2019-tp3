@@ -23,7 +23,7 @@ public final class CollisionManager {
         initializeCollisions();
         double accumulatedTime = 0.0;
         double nextFrameTime = 0;
-        for(int i = 0; i < Configuration.getTimeLimit(); i++) {
+        while(Double.compare(nextFrameTime, Configuration.getTimeLimit()) <= 0) {
             Collision firstCollision = getFirstCollision();
 
             double collisionTime = firstCollision.getTime();
@@ -37,7 +37,7 @@ public final class CollisionManager {
 
             if(Configuration.isSingleRunMode()
                     && Double.compare(accumulatedTime, nextFrameTime) >= 0) {
-                nextFrameTime = Configuration.writeOvitoFile(
+                nextFrameTime = Configuration.writeOvitoOutputFile(
                         accumulatedTime,
                         nextFrameTime - lastAccumulatedTime,
                         nextFrameTime,
@@ -59,7 +59,6 @@ public final class CollisionManager {
     private boolean isBigParticleBorderCollision(Collision collision) {
         boolean isBorderCollision = collision instanceof BorderCollision;
         if(isBorderCollision) {
-            BorderCollision borderCollision = (BorderCollision) collision;
             return collision.getParticle().getId() == 0;
         }
         return false;

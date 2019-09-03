@@ -219,10 +219,10 @@ public final class Configuration {
         }
     }
 
-    public static double writeOvitoFile(final double accumulatedTime, double deltaTime, double nextFrameTime, final List<Particle> particles) {
+    public static double writeOvitoOutputFile(final double accumulatedTime, double deltaTime, double nextFrameTime, final List<Particle> particles) {
         File outputFile = new File("ovito_output.xyz");
 
-        for(int i = 0; Double.compare(nextFrameTime, accumulatedTime) <= 0; i++) {
+        while(Double.compare(nextFrameTime, accumulatedTime) <= 0) {
             try(FileWriter fw = new FileWriter(outputFile, true)) {
                 fw.write((smallParticleCount + 1) + "\n");
                 fw.write("Lattice=\"" + AREA_BORDER_LENGTH * 2 + " 0.0 0.0 0.0 " + AREA_BORDER_LENGTH * 2 + " 0.0 0.0 0.0 "
@@ -251,7 +251,6 @@ public final class Configuration {
         fw.write('\n');
     }
 
-    @Deprecated
     public static void writeOvitoOutputFile(final Double time, final List<Particle> particles) {
         File outputFile = new File("ovito_output.xyz");
         try(FileWriter fw = new FileWriter(outputFile, true)) {
@@ -267,7 +266,6 @@ public final class Configuration {
         }
     }
 
-    @Deprecated
     private static void writeOvitoParticle(final FileWriter fw, final Particle particle) throws IOException {
         fw.write(particle.getId() + " " + particle.getRadius() + " " + particle.getMass() + " " + particle.getPosition().getX() + " "
                 + particle.getPosition().getY() + " " + particle.getVelocity().getX() + " " + particle.getVelocity().getY());
