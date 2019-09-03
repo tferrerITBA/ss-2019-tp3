@@ -106,5 +106,9 @@ public final class Particle implements Cloneable {
     public double getVelocityAngle() {
         return Math.atan2(velocity.y, velocity.x);
     }
+    
+    public double getVelocityModule() {
+        return Math.sqrt(Math.pow(velocity.getX(), 2) + Math.pow(velocity.getY(), 2));
+    }
 
 }
