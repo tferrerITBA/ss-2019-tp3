@@ -31,6 +31,12 @@ pip install -r requirements.txt
 ```
 Y ejecutar el script corriendo:
 ```
-python analyzer.py <directory_with_xyz_files>
+python visualizer.py <directory_with_xyz_files>
 ```
-Donde `<directory_with_xyz_files>` es el path relativo hacia un directorio con archivos output de la simulación. Editando las ultimas lineas del archivo analyzer.py se calculan distintos atributos, cambiando el llamado a la función.
+Donde `<directory_with_xyz_files>` es el path relativo hacia un directorio con archivos output de la simulación (e.g. `test`). Por ahora, para correr un analisis en particular, hay que agregar en la ultima linea del archivo `visualizer.py` alguna de las siguientes lineas:
+```
+ex3_1()
+ex3_2()
+ex3_3()
+```
+El programa imprime los resultados por salida estandar y guarda las images calculadas en la carpeta `output`, relativa al directorio en el cual se ejecuta el programa.
