@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from analyzer import calculateCollisionFrequency, calculateCollisionTimesAverage, calculateProbabilityCollisionTimesDistribution, calculateProbabilityVelocities, calculateDiffusion
-from parser import parseDirectoryFromArgs
+from parser import parseDirectoryFromArgs, parseModeFromArgs
 import os
 
 OUTPUT_FOLDER = 'output'
@@ -67,8 +67,11 @@ def ex3_4(simulations):
 
 def run():
   simulations = parseDirectoryFromArgs()
-  ex3_1(simulations)
-  ex3_2(simulations)
-  ex3_4(simulations)
+  mode = parseModeFromArgs()
+  if mode == 1:
+    ex3_4(simulations)
+  elif mode == 2:
+    ex3_1(simulations)
+    ex3_2(simulations)
 
 run()
