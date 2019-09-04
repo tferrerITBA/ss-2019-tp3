@@ -1,18 +1,17 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from analyzer import calculateCollisionFrequency, calculateCollisionTimesAverage, calculateProbabilityCollisionTimesDistribution, calculateProbabilityVelocities
+from analyzer import calculateCollisionFrequency, calculateCollisionTimesAverage, calculateProbabilityCollisionTimesDistribution, calculateProbabilityVelocities, calculateDiffusion
 from parser import parseDirectoryFromArgs
 import os
 
 OUTPUT_FOLDER = 'output'
-simulations = parseDirectoryFromArgs()
 
 def saveFig(fig, name):
   if not os.path.exists(OUTPUT_FOLDER):
     os.makedirs(OUTPUT_FOLDER)
   fig.savefig(f'{OUTPUT_FOLDER}/{name}.png')
   
-def ex3_1():
+def ex3_1(simulations):
   for simulation in simulations:
     print(f'Simulacion: {simulation.name}')
     print(f'Frecuencia de colisiones (#/s):  {calculateCollisionFrequency(simulation)}')
@@ -25,9 +24,10 @@ def ex3_1():
     ax.set_ylabel('Densidad de probabilidad')
     ax.set_title(f'Movimiento Browniano (N={len(simulation.steps[0].particles)})') 
     fig.tight_layout()
+
     saveFig(fig, f'{simulation.name}--3_1')
 
-def ex3_2():
+def ex3_2(simulations):
   for simulation in simulations:
     print(f'Simulacion: {simulation.name}')
     speeds, listOfSpeedsTime0 = calculateProbabilityVelocities(simulation)
@@ -39,6 +39,7 @@ def ex3_2():
     ax.set_ylabel('Densidad de probabilidad')
     ax.set_title(f'Movimiento Browniano (N={len(simulation.steps[0].particles)}) - Ultimo tercio de tiempo') 
     fig.tight_layout()
+
     saveFig(fig, f'{simulation.name}--3_2')
     
     # grafica en t=0
@@ -48,8 +49,26 @@ def ex3_2():
     ax.set_ylabel('Densidad de probabilidad')
     ax.set_title(f'Movimiento Browniano (N={len(simulation.steps[0].particles)}) - t=0') 
     fig.tight_layout()
+
     saveFig(fig, f'{simulation.name}--3_2--initial')
 
-def ex3_3():
-  diffusionSlope, diffusionB, averageSquaredDistances = calculateDiffusion()
+def ex3_4(simulations):
+  diffusionSlope, diffusionB, averageSquaredDistances, deviations = calculateDiffusion(simulations)
   print(f'Coeficiente de difusion aproximado: {diffusionSlope}')
+
+  fig, ax = plt.subplots()
+  ax.errorbar(range(len(averageSquaredDistances)), averageSquaredDistances, yerr=deviations) 
+  ax.set_xlabel('Tiempo (s)')
+  ax.set_ylabel('Coeficiente de difusion medio')
+  ax.set_title(f'Movimiento Browniano (N={len(simulations[0].steps[0].particles)}) - Ultima mitad del tiempo') 
+  fig.tight_layout()
+
+  saveFig(fig, f'{simulation.name}--3_4')
+
+def run():
+  simulations = parseDirectoryFromArgs()
+  ex3_1(simulations)
+  ex3_2(simulations)
+  ex3_4(simulations)
+
+run()

@@ -33,7 +33,7 @@ Y ejecutar el script corriendo:
 ```
 python visualizer.py <directory_with_xyz_files>
 ```
-Donde `<directory_with_xyz_files>` es el path relativo hacia un directorio con archivos output de la simulación (e.g. `test`). Por ahora, para correr un analisis en particular, hay que agregar en la ultima linea del archivo `visualizer.py` alguna de las siguientes lineas:
+Donde `<directory_with_xyz_files>` es el path relativo hacia un directorio con archivos output de la simulación (e.g. `test`). Por ahora, el comando anterior corre todos los analisis, sobre todos los archivos de output del directorio que se pasa por parametro. Si se requiere cambiar este comportamiento hay que eliminar `run()` de la ultima linea del archivo `visualizer.py` y agregar alguna de las siguientes lineas:
 ```
 ex3_1()
 ex3_2()
