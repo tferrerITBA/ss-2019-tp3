@@ -16,12 +16,12 @@ def ex3_1(simulations):
     print(f'Simulacion: {simulation.name}')
     print(f'Frecuencia de colisiones (#/s):  {calculateCollisionFrequency(simulation)}')
     print(f'Promedio de tiempos de colision:  {calculateCollisionTimesAverage(simulation)}')
-    times = calculateProbabilityCollisionTimesDistribution(simulation)
+    times,edges = calculateProbabilityCollisionTimesDistribution(simulation)
 
     fig, ax = plt.subplots()
-    ax.hist(times, density=True, bins=100) 
+    ax.hist(times, bins=20, weights=np.ones_like(times) / len(times)) 
     ax.set_xlabel('Tiempos de colisión (s)')
-    ax.set_ylabel('Densidad de probabilidad')
+    ax.set_ylabel('Distribución de probabilidad')
     ax.set_title(f'Movimiento Browniano (N={len(simulation.steps[0].particles)})') 
     fig.tight_layout()
 
@@ -34,9 +34,9 @@ def ex3_2(simulations):
 
     # grafica el ultimo tercio
     fig, ax = plt.subplots()
-    ax.hist(speeds, density=True, bins=100) 
+    ax.hist(speeds, weights=np.ones_like(speeds) / len(speeds), bins=20) 
     ax.set_xlabel('Modulo de las velocidades (m/s)')
-    ax.set_ylabel('Densidad de probabilidad')
+    ax.set_ylabel('Distribución de probabilidad')
     ax.set_title(f'Movimiento Browniano (N={len(simulation.steps[0].particles)}) - Ultimo tercio de tiempo') 
     fig.tight_layout()
 
@@ -44,9 +44,9 @@ def ex3_2(simulations):
     
     # grafica en t=0
     fig, ax = plt.subplots()
-    ax.hist(listOfSpeedsTime0, density=True, bins=100) 
+    ax.hist(listOfSpeedsTime0, weights=np.ones_like(listOfSpeedsTime0) / len(listOfSpeedsTime0), bins=20) 
     ax.set_xlabel('Modulo de las velocidades (m/s)')
-    ax.set_ylabel('Densidad de probabilidad')
+    ax.set_ylabel('Distribución de probabilidad')
     ax.set_title(f'Movimiento Browniano (N={len(simulation.steps[0].particles)}) - t=0') 
     fig.tight_layout()
 

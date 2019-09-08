@@ -26,10 +26,10 @@ def calculateCollisionTimesAverage(simulation):
 def calculateProbabilityCollisionTimesDistribution(simulation):
   accumulatedTimes = [step.time for step in simulation.steps]
   deltaTimes = calculateDeltas(accumulatedTimes)
-  return deltaTimes
+  # return deltaTimes
   # next lines calculate PDF manually, but the chart library does this automatically
   hist, bin_edges = PDF(deltaTimes, 0.25)
-  return hist * calculateDeltas(bin_edges), bin_edges
+  return deltaTimes, bin_edges
 
 def calculateProbabilityVelocities(simulation):
   lastThirdSteps = simulation.getLastThird()
