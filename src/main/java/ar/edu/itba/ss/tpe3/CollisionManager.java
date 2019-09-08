@@ -23,27 +23,26 @@ public final class CollisionManager {
         initializeCollisions();
         double accumulatedTime = 0.0;
         double nextFrameTime = 0;
-        while(Double.compare(nextFrameTime, Configuration.getTimeLimit()) <= 0) {
+        for(int i = 0; i < Configuration.getTimeLimit(); i++) {
             Collision firstCollision = getFirstCollision();
 
             double collisionTime = firstCollision.getTime();
             double lastAccumulatedTime = accumulatedTime;
             accumulatedTime += collisionTime;
 
-//          WRITE EVERY EVENT
-//            if(Configuration.isSingleRunMode()) {
-//                Configuration.writeOvitoOutputFile(accumulatedTime, grid.getParticles());
-//            }
+           if(Configuration.isSingleRunMode()) {
+               Configuration.writeOvitoOutputFile(accumulatedTime, grid.getParticles());
+           }
 
-            if(Configuration.isSingleRunMode()
-                    && Double.compare(accumulatedTime, nextFrameTime) >= 0) {
-                nextFrameTime = Configuration.writeOvitoOutputFile(
-                        accumulatedTime,
-                        nextFrameTime - lastAccumulatedTime,
-                        nextFrameTime,
-                        grid.getParticles()
-                );
-            }
+            // if(Configuration.isSingleRunMode()
+            //         && Double.compare(accumulatedTime, nextFrameTime) >= 0) {
+            //     nextFrameTime = Configuration.writeOvitoOutputFile(
+            //             accumulatedTime,
+            //             nextFrameTime - lastAccumulatedTime,
+            //             nextFrameTime,
+            //             grid.getParticles()
+            //     );
+            // }
 
             if(isBigParticleBorderCollision(firstCollision)) {
                 System.out.println("Big Particle collided with border. Finishing...");
