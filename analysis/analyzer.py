@@ -1,10 +1,11 @@
 from parser import parseDirectoryFromArgs
 from calculator import calculateDistance, squareList, averageLists, linearRegression, calculateDeltas, average, discreteRange, PDF, stdevLists
 from functools import reduce #python 3
+import numpy
 
 def getBallDistancesFromOrigin(simulation):
   firstBall = simulation.steps[0].ball
-  distances = [calculateDistance(firstBall.position(), step.ball.position()) for step in simulation.getSecondHalf()]
+  distances = [calculateDistance(firstBall.position(), step.ball.position()) for step in simulation.steps]
   return distances
 
 # Not used yet
@@ -44,15 +45,27 @@ def calculateProbabilityVelocities(simulation):
 def calculateDiffusion(simulations, getDistanceFromOrigin = getBallDistancesFromOrigin):
   squaredDistances = [squareList(getDistanceFromOrigin(simulation)) for simulation in simulations]
   maxTimes = max([len(squaredDistance) for squaredDistance in squaredDistances])
+  minTimes = min([len(squaredDistance) for squaredDistance in squaredDistances])
   
   # Since time limit differs between multiple simulations, we repeat the last element for those shorter.
+  # normalizedLists = []
+  # for squaredDistance in squaredDistances:
+  #   if len(squaredDistance) <= maxTimes:
+  #     normalizedLists.append(squaredDistance + [squaredDistance[-1]]*(maxTimes - len(squaredDistance)))
+
+  # Since time limit differs between multiple simulations, we keep their shortest length
+  print(minTimes)
   normalizedLists = []
   for squaredDistance in squaredDistances:
-    if len(squaredDistance) <= maxTimes:
-      normalizedLists.append(squaredDistance + [squaredDistance[-1]]*(maxTimes - len(squaredDistance)))
+    normalizedLists.append(squaredDistance[:minTimes])
 
-  averageSquaredDistances = averageLists(normalizedLists)
-  # TODO: Preguntar si el error se calcula antes o despues de hacer el cuadrado.
-  deviations = stdevLists(normalizedLists)
+  # Since time limit differs between multiple simulations, we average those that exist for a specific step.
+  # normalizedLists = []
+  # for squaredDistance in squaredDistances:
+  #   if len(squaredDistance) <= maxTimes:
+  #     normalizedLists.append(squaredDistance + [numpy.nan]*(maxTimes - len(squaredDistance)))
+
+  averageSquaredDistances = averageLists(normalizedLists)[(minTimes)//2:]
+  deviations = stdevLists(normalizedLists)[(minTimes)//2:]
   diffusion, b = linearRegression(averageSquaredDistances)
   return diffusion,b, averageSquaredDistances, deviations

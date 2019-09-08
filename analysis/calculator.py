@@ -18,12 +18,12 @@ def calculateDeltas(lst):
 # Takes multiple lists, and returns a single list where each element is the average of the elements
 # of the passed list in a specific index
 def averageLists(lists):
-  return numpy.mean(lists, axis=0 )
+  return numpy.nanmean(lists, axis=0 )
 
 # Takes multiple lists, and returns a single list where each element is the std_dev of the elements
 # of the passed list in a specific index
 def stdevLists(lists):
-  return numpy.std(lists, axis=0 )
+  return numpy.nanstd(lists, axis=0 )
 
 # Returns the average of a list
 def average(lst):
