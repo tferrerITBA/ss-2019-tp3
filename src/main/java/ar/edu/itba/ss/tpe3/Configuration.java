@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 public final class Configuration {
     private static String inputFileName = "config.txt";
     private static Integer smallParticleCount;
-    private static Mode mode;
     private static int timeLimit;
     public static final int TEST_CYCLES = 20;
     public static final double AREA_BORDER_LENGTH = 0.5;
@@ -31,18 +30,6 @@ public final class Configuration {
 
     private Configuration() {
 
-    }
-
-    public static void requestMode() {
-        @SuppressWarnings("resource")
-        Scanner scanner = new Scanner(System.in);
-
-        Integer selectedMode = null;
-        System.out.println("Enter Mode [0 -> Single Run; 1-> Multiple Tests]: ");
-        while(selectedMode == null || selectedMode < 0 || selectedMode > 1) {
-            selectedMode = stringToInt(scanner.nextLine());
-        }
-        mode = Mode.valueOf(selectedMode).get();
     }
 
     public static void requestParameters() {
@@ -77,8 +64,7 @@ public final class Configuration {
     public static List<Particle> generateRandomInputFilesAndParseConfiguration() {
         generateRandomInputFile();
         List<Particle> particles = parseConfiguration();
-        if(isSingleRunMode())
-            generateOvitoOutputFile();
+        generateOvitoOutputFile();
         return particles;
     }
 
@@ -286,14 +272,6 @@ public final class Configuration {
 
     public static int getTimeLimit() {
         return timeLimit;
-    }
-
-    public static boolean isSingleRunMode() {
-        return mode == Mode.SINGLE_RUN;
-    }
-
-    public static boolean isMultipleTestMode() {
-        return mode == Mode.MULTIPLE_TEST;
     }
 
 }

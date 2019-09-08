@@ -35,8 +35,7 @@ public final class CollisionManager {
 //                Configuration.writeOvitoOutputFile(accumulatedTime, grid.getParticles());
 //            }
 
-            if(Configuration.isSingleRunMode()
-                    && Double.compare(accumulatedTime, nextFrameTime) >= 0) {
+            if(Double.compare(accumulatedTime, nextFrameTime) >= 0) {
                 nextFrameTime = Configuration.writeOvitoOutputFile(
                         accumulatedTime,
                         nextFrameTime - lastAccumulatedTime,

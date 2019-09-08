@@ -12,14 +12,7 @@ public final class Main {
     }
 
     public static void main(String[] args) {
-        Configuration.requestMode();
-
-        if(Configuration.isSingleRunMode()) {
-            executeSingleRun();
-        } else if(Configuration.isMultipleTestMode()) {
-            executeMultipleTests();
-        }
-
+        executeSingleRun();
         long endTime = System.nanoTime();
         System.out.println("Process done in " + TimeUnit.NANOSECONDS.toMillis(endTime - startTime) + " ms.");
     }
@@ -32,17 +25,6 @@ public final class Main {
         CollisionManager cm = new CollisionManager(grid);
         cm.executeAlgorithm();
         System.out.println("Temperature: " + grid.getTemperature());
-    }
-
-    private static void executeMultipleTests() {
-        Configuration.requestParameters();
-        startTime = System.nanoTime();
-        for(int i = 0; i < Configuration.TEST_CYCLES; i++) {
-            List<Particle> particles = Configuration.generateRandomInputFilesAndParseConfiguration();
-            Grid grid = new Grid(particles);
-            CollisionManager cm = new CollisionManager(grid);
-            cm.executeAlgorithm();
-        }
     }
 
 }
