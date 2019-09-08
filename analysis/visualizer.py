@@ -57,13 +57,18 @@ def ex3_4(simulations):
   print(f'Coeficiente de difusion aproximado: {diffusionSlope}')
 
   fig, ax = plt.subplots()
-  ax.errorbar(range(len(averageSquaredDistances)), averageSquaredDistances, yerr=deviations) 
+  markers, caps, bars = ax.errorbar(range(len(averageSquaredDistances)), averageSquaredDistances, yerr=deviations) 
   ax.set_xlabel('Tiempo (s)')
   ax.set_ylabel('Coeficiente de difusion medio')
   ax.set_title(f'Movimiento Browniano (N={len(simulations[0].steps[0].particles)}) - Ultima mitad del tiempo') 
   fig.tight_layout()
 
-  saveFig(fig, f'{simulation.name}--3_4')
+  # loop through bars and caps and set the alpha value
+  [bar.set_alpha(0.5) for bar in bars]
+  [cap.set_alpha(0.5) for cap in caps]
+
+
+  saveFig(fig, '3_4')
 
 def run():
   simulations = parseDirectoryFromArgs()

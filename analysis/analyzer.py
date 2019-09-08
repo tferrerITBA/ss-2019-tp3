@@ -43,8 +43,16 @@ def calculateProbabilityVelocities(simulation):
 
 def calculateDiffusion(simulations, getDistanceFromOrigin = getBallDistancesFromOrigin):
   squaredDistances = [squareList(getDistanceFromOrigin(simulation)) for simulation in simulations]
-  averageSquaredDistances = averageLists(squaredDistances)
+  maxTimes = max([len(squaredDistance) for squaredDistance in squaredDistances])
+  
+  # Since time limit differs between multiple simulations, we repeat the last element for those shorter.
+  normalizedLists = []
+  for squaredDistance in squaredDistances:
+    if len(squaredDistance) <= maxTimes:
+      normalizedLists.append(squaredDistance + [squaredDistance[-1]]*(maxTimes - len(squaredDistance)))
+
+  averageSquaredDistances = averageLists(normalizedLists)
   # TODO: Preguntar si el error se calcula antes o despues de hacer el cuadrado.
-  deviations = stdevLists(squaredDistances)
+  deviations = stdevLists(normalizedLists)
   diffusion, b = linearRegression(averageSquaredDistances)
   return diffusion,b, averageSquaredDistances, deviations
