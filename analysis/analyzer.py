@@ -67,5 +67,6 @@ def calculateDiffusion(simulations, getDistanceFromOrigin = getBallDistancesFrom
 
   averageSquaredDistances = averageLists(normalizedLists)[(minTimes)//2:]
   deviations = stdevLists(normalizedLists)[(minTimes)//2:]
+
   diffusion, b = linearRegression(averageSquaredDistances)
   return diffusion,b, averageSquaredDistances, deviations

@@ -41,3 +41,20 @@ def PDF(lst, maxValue):
 def linearRegression(data):
   m,b = numpy.polyfit(range(len(data)), data, 1)
   return m,b
+
+
+def linearFn(x,c):
+  return c*x
+
+def errorCalculator(xs, ys, approxFn, c):
+  results = []
+  for i in range(len(ys)):
+    results.append((ys[i] - approxFn(xs[i], c)) ** 2)
+  return sum(results)
+
+def errorFn(xs, ys, approxFn = linearFn):
+  results = []
+  rang = discreteRange(0,0.00015, 0.00001)
+  for c in rang:
+    results.append(errorCalculator(xs, ys, approxFn, c))
+  return results, rang

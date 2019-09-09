@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from analyzer import calculateCollisionFrequency, calculateCollisionTimesAverage, calculateProbabilityCollisionTimesDistribution, calculateProbabilityVelocities, calculateDiffusion
 from parser import parseDirectoryFromArgs, parseModeFromArgs
+from calculator import errorFn
 import os
 
 OUTPUT_FOLDER = 'output'
@@ -77,6 +78,19 @@ def ex3_4(simulations):
 
   saveFig(fig, '3_4')
 
+def error(simulations):
+  diffusionSlope, diffusionB, averageSquaredDistances, deviations = calculateDiffusion(simulations)
+  print(f'Coeficiente de difusion aproximado: {diffusionSlope}')
+  
+  fig, ax = plt.subplots()
+  y_axis, x_axis = errorFn(range(len(averageSquaredDistances)),averageSquaredDistances)
+  ax.plot([x * 10 ** 5 for x in x_axis], y_axis) 
+  ax.set_xlabel('C (10^-5)')
+  ax.set_ylabel('Error')
+  ax.set_title(f'Error del ajuste por función lineal') 
+  fig.tight_layout()
+  saveFig(fig, 'error')
+
 def run():
   simulations = parseDirectoryFromArgs()
   mode = parseModeFromArgs()
@@ -85,5 +99,7 @@ def run():
   elif mode == 2:
     ex3_1(simulations)
     ex3_2(simulations)
+  elif mode == 3:
+    error(simulations)
 
 run()
