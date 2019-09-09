@@ -58,20 +58,21 @@ def ex3_4(simulations):
 
   fig, ax = plt.subplots()
   x_axis = [ x + len(averageSquaredDistances) for x in range(len(averageSquaredDistances)) ]
-  markers, caps, bars = ax.errorbar(x_axis, averageSquaredDistances, yerr=deviations) 
+  markers, caps, bars = ax.errorbar(x_axis, averageSquaredDistances, yerr=deviations, capsize=5, capthick=2, fmt="o", zorder=1, markersize=2) 
   ax.set_xlabel('Step')
-  ax.set_ylabel('Coeficiente de difusion medio')
+  ax.set_ylabel('DCM = <z^2>')
   ax.set_title(f'Movimiento Browniano (N={len(simulations[0].steps[0].particles)}) - Ultima mitad del tiempo') 
   fig.tight_layout()
-
+  
   # loop through bars and caps and set the alpha value
   [bar.set_alpha(0.5) for bar in bars]
-  [cap.set_alpha(0.5) for cap in caps]
+  # [cap.set_alpha(0.5) for cap in caps]
+
 
   # Create linear regresion
   x = np.linspace(min(x_axis),max(x_axis),1000)
   y = diffusionSlope*(x - len(averageSquaredDistances))+diffusionB
-  ax.plot(x,y, '--', label='Regresión Lineal')
+  ax.plot(x,y, '--', label='Regresión Lineal', zorder=2,linewidth=2)
   ax.legend(loc='upper left')
 
   saveFig(fig, '3_4')
